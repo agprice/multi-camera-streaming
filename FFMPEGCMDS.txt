@@ -1,0 +1,36 @@
+ffmpeg -f v4l2 -i /dev/video0 -profile:v high -pix_fmt yuvj420p -level:v 4.1 -preset ultrafast -tune zerolatency -vcodec libx264 -r 60 -b:v 128k -s 640x360 -f mpegts -flush_packets 0 ~/Desktop/test.mp4
+
+
+
+
+
+3:20
+ffmpeg -f v4l2 -pix_fmt Y16 -r 30 -i /dev/video0 -frames:v 135 -compression_algo deflate ~/Desktop/CaptureTest3/t%04d.tiff
+
+
+  542  ffmpeg -f v4l2 -i /dev/video0 -profile:v high -pix_fmt yuvj420p -level:v 4.1 -preset ultrafast -tune zerolatency -vcodec libx264 -r 60 -b:v 128k -s 640x360 -f mpegts -flush_packets 0 ~/Desktop/test.mp4
+  543  ffmpeg -f v4l2 -i /dev/video0 -profile:v high -pix_fmt yuvj420p -level:v 4.1 -preset ultrafast -tune zerolatency -vcodec libx264 -r 30 -b:v 512k -s 1920x1080 -f mpegts -flush_packets 0 ~/Desktop/test.mp4
+  544  ffmpeg -f v4l2 -i /dev/video0 -profile:v high -pix_fmt yuvj420p -level:v 4.1 -preset ultrafast -tune zerolatency -vcodec libx264 -r 30 -b:v 2m -s 1920x1080 -f mpegts -flush_packets 0 ~/Desktop/test.mp4
+  545  ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+100,200 ~/Desktop/screen.mp4
+  546  ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0,0 ~/Desktop/screen.mp4
+  547  ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0,0 ~/Desktop/screen.mp4
+  548  ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+0,0 ~/Desktop/screen.mp4
+  549  ffmpeg -vappi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+0,0 -vf 'format=nv12,hwupload' -c:v h264_vaapi ~/Desktop/screen.mp4
+  550  ffmpeg -vaapi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+0,0 -vf 'format=nv12,hwupload' -c:v h264_vaapi ~/Desktop/screen.mp4
+  551  ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+0,0 -c:v h264 -preset ultrafast -tune zerolatency ~/Desktop/screen.mp4
+  552  ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0+0,0 -c:v h264 -preset ultrafast -tune zerolatency ~/Desktop/screen-cpu.mp4
+  553  ffmpeg -vaapi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 60 -f x11grab -i :0.0+0,0 -vf 'format=nv12,hwupload' -c:v h264_vaapi ~/Desktop/screen-vaapi.mp4
+  554  ffmpeg -vaapi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 144 -f x11grab -i :0.0+0,0 -vf 'format=nv12,hwupload' -c:v h264_vaapi ~/Desktop/screen-vaapi.mp4
+  555  ffmpeg -vaapi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 144 -vsync 2 -f x11grab -i :0.0+0,0 -vf 'format=nv12,hwupload' -c:v h264_vaapi ~/Desktop/screen-vaapi.mp4
+  556  ffmpeg -vaapi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 144 -level 5.2 -vsync 2 -f x11grab -i :0.0+0,0 -vf 'format=nv12,hwupload' -c:v h264_vaapi ~/Desktop/screen-vaapi.mp4
+  557  ffmpeg -vaapi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 144 -level:v 5.2 -vsync 2 -f x11grab -i :0.0+0,0 -vf 'format=nv12,hwupload' -c:v h264_vaapi ~/Desktop/screen-vaapi.mp4
+  558  ffmpeg -vaapi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 144 -vsync 2 -f x11grab -i :0.0+0,0 -vf 'format=nv12,hwupload' -c:v h264_vaapi ~/Desktop/screen-vaapi.mp4
+  559  ffmpeg -video_size 1920x1080 -framerate 144 -level:v 5.2 -f x11grab -i :0.0+0,0 -c:v h264 -preset ultrafast -tune zerolatency ~/Desktop/screen-cpu.mp4
+  560  ffmpeg -video_size 1920x1080 -framerate 144 -level:v 401 -f x11grab -i :0.0+0,0 -c:v h264 -preset ultrafast -tune zerolatency ~/Desktop/screen-cpu.mp4
+  561  ffmpeg -video_size 1920x1080 -framerate 144 -level:v 4.1 -f x11grab -i :0.0+0,0 -c:v h264 -preset ultrafast -tune zerolatency ~/Desktop/screen-cpu.mp4
+  562  ffmpeg -video_size 1920x1080 -framerate 144 -f x11grab -i :0.0+0,0 -c:v h264 -level:v 4.1 -preset ultrafast -tune zerolatency ~/Desktop/screen-cpu.mp4
+  563  ffmpeg -video_size 1920x1080 -framerate 144 -f x11grab -i :0.0+0,0 -c:v h264 -level:v 5.2 -preset ultrafast -tune zerolatency ~/Desktop/screen-cpu.mp4
+  564  ffmpeg -video_size 1920x1080 -framerate 144 -f x11grab -i :0.0+0,0 -c:v h264 -level:v 5.2 -vsync 2 -preset ultrafast -tune zerolatency ~/Desktop/screen-cpu.mp4
+  565  ffmpeg -vaapi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 144 -vsync 2 -f x11grab -i :0.0+0,0 -vf 'format=nv12,hwupload' -c:v h264_vaapi -level:v 5.2 ~/Desktop/screen-vaapi.mp4
+  566  ffmpeg -vaapi_device /dev/dri/renderD128 -video_size 1280x720 -framerate 144 -vsync 2 -f x11grab -i :0.0+0,0 -vf 'format=nv12,hwupload' -c:v h264_vaapi -level:v 5.2 ~/Desktop/screen-vaapi.mp4
+
