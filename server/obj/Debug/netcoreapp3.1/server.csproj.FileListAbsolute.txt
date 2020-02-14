@@ -1,0 +1,11 @@
+C:\Users\zaphe\git\multi-camera-streaming\server\bin\Debug\netcoreapp3.1\server.exe
+C:\Users\zaphe\git\multi-camera-streaming\server\bin\Debug\netcoreapp3.1\server.deps.json
+C:\Users\zaphe\git\multi-camera-streaming\server\bin\Debug\netcoreapp3.1\server.runtimeconfig.json
+C:\Users\zaphe\git\multi-camera-streaming\server\bin\Debug\netcoreapp3.1\server.runtimeconfig.dev.json
+C:\Users\zaphe\git\multi-camera-streaming\server\bin\Debug\netcoreapp3.1\server.dll
+C:\Users\zaphe\git\multi-camera-streaming\server\bin\Debug\netcoreapp3.1\server.pdb
+C:\Users\zaphe\git\multi-camera-streaming\server\obj\Debug\netcoreapp3.1\server.csprojAssemblyReference.cache
+C:\Users\zaphe\git\multi-camera-streaming\server\obj\Debug\netcoreapp3.1\server.AssemblyInfoInputs.cache
+C:\Users\zaphe\git\multi-camera-streaming\server\obj\Debug\netcoreapp3.1\server.AssemblyInfo.cs
+C:\Users\zaphe\git\multi-camera-streaming\server\obj\Debug\netcoreapp3.1\server.dll
+C:\Users\zaphe\git\multi-camera-streaming\server\obj\Debug\netcoreapp3.1\server.pdb
