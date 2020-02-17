@@ -7,13 +7,17 @@ namespace server
     {
         static void Main(string[] args)
         {
+            test();
+        }
+        static void test()
+        {
             try{
                 var process = new Process
                 {
                     StartInfo = 
                     {
                         FileName = "ffmpeg",
-                        Arguments = "-f v4l2 -i /dev/video0 -framerate 20 -frames:v 20 -s 1366x768 -vcodec h264 -f mpegts pipe:1",
+                        Arguments = "-hide_banner -loglevel error -f v4l2 -i /dev/video0 -framerate 20 -frames:v 20 -s 1366x768 -vcodec h264 -f mpegts pipe:1",
                         UseShellExecute = false,
                         RedirectStandardInput = true,
                         RedirectStandardOutput = true
