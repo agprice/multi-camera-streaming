@@ -1,8 +1,8 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\zaphe\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\zaphe\\.nuget\\packages"
+      "/home/object/.dotnet/store/|arch|/|tfm|",
+      "/home/object/.nuget/packages"
     ]
   }
 }

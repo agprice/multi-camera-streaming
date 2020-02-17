@@ -8,19 +8,19 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\zaphe\\.nuget\\packages\\": {}
+    "/home/object/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\zaphe\\git\\multi-camera-streaming\\server\\server.csproj",
+      "projectUniqueName": "/home/object/Desktop/Github/multi-camera-streaming/server/server.csproj",
       "projectName": "server",
-      "projectPath": "C:\\Users\\zaphe\\git\\multi-camera-streaming\\server\\server.csproj",
-      "packagesPath": "C:\\Users\\zaphe\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\zaphe\\git\\multi-camera-streaming\\server\\obj\\",
+      "projectPath": "/home/object/Desktop/Github/multi-camera-streaming/server/server.csproj",
+      "packagesPath": "/home/object/.nuget/packages/",
+      "outputPath": "/home/object/Desktop/Github/multi-camera-streaming/server/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\zaphe\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/object/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
@@ -56,7 +56,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/3.1.101/RuntimeIdentifierGraph.json"
       }
     }
   }
