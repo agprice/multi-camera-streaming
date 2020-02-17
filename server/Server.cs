@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace server
 {
-    class Program
+    class Server 
     {
         static void Main(string[] args)
         {
@@ -19,10 +19,12 @@ namespace server
                         FileName = "ffmpeg",
                         Arguments = "-hide_banner -loglevel error -f v4l2 -i /dev/video0 -framerate 20 -frames:v 20 -s 1366x768 -vcodec h264 -f mpegts pipe:1",
                         UseShellExecute = false,
+                        RedirectStandardOutput = true,
                         RedirectStandardInput = true,
-                        RedirectStandardOutput = true
+                        RedirectStandardError = true,
                     }
                 };
+                process.ErrorDataReceived += new DataReceivedEventHandler((o, e) => throw new ApplicationException(e.Data));
                 process.Start();
                 var value = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
