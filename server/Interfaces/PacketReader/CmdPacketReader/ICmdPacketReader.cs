@@ -4,5 +4,6 @@ namespace server.Interfaces.PacketReader.CmdPacketReader
 {
     public interface ICmdPacketReader : IPacketReader
     {
+
     }
 }
