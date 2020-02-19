@@ -80,7 +80,7 @@ namespace server
                 process.ErrorDataReceived += new DataReceivedEventHandler((o, e) => throw new ApplicationException(e.Data));
                 Int32 port = 9001;
                 IPAddress localAddr = IPAddress.Parse("127.0.0.1");
-                var server = new TcpListener(localAddr, port);
+                var server = new TcpListener(IPAddress.Any, port);
                 server.Start();
                 Console.WriteLine("Started process.");
                 while (true)
