@@ -1,6 +1,6 @@
 using System;
 
-namespace server.Interfaces
+namespace server.Interfaces.Options
 {
     public interface IOptions
     {
@@ -8,12 +8,18 @@ namespace server.Interfaces
         /// Adds an Option to the set of options
         /// </summary>
         /// <param name="options">Option to add</param>
-        void add(IOptions options);
+        void add(String options);
         
         /// <summary>
         /// Remove an Option type from set of options
         /// </summary>
         /// <param name="options">Option to remove</param>
-        void remove(IOptions options);
+        void remove(String options);
+
+        /// <summary>
+        /// Get options as String formatted options
+        /// </summary>
+        /// <returns>Returns options created as a String of options</returns>
+        String getOptions();
     }
 }
