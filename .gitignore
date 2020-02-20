@@ -58,3 +58,6 @@ obj/
 x64/
 x86/
 [Bb]uild/
+
+# Test mp4s
+*.mp4

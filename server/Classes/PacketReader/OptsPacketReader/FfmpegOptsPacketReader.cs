@@ -17,10 +17,11 @@ namespace server.Classes.PacketReader.OptsPacketReader
             var buffer = new byte[256];
             var message = new StringBuilder();
 
-            do {
+            do
+            {
                 stream.Read(buffer, 0, buffer.Length);
-                message.AppendFormat("{0}", Encoding.ASCII.GetString(buffer);
-            } while(stream.DataAvailable);
+                message.AppendFormat("{0}", Encoding.ASCII.GetString(buffer));
+            } while (stream.DataAvailable);
 
             var ffmpegops = new FfmpegOptions();
             ffmpegops.add(message.ToString());
