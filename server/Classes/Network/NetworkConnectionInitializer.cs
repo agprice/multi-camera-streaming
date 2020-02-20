@@ -11,7 +11,7 @@ namespace server.Classes.Network
     {
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        async Task awaitConnections()
+        public void awaitConnections()
         {
             try
             {
@@ -22,14 +22,10 @@ namespace server.Classes.Network
                 Logger.Info("Awaiting connections");
                 while (true)
                 {
-                    Console.Write("Waiting for a connection... ");
-
-                    // Perform a blocking call to accept requests.
-                    // You could also user server.AcceptSocket() here.
                     TcpClient client = server.AcceptTcpClient();
                     Logger.Info($"Connected to {client}");
+                    _ = Task.Run(() => new NetworkClientConnection(client));
                     NetworkStream stream = client.GetStream();
-                    break;
                 }
             }
             catch (Exception ex)

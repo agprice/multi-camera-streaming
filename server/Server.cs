@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Net.Sockets;
 using System.Net;
-
+using server.Classes.Network;
 namespace server
 {
     public class Server
     {
         static void Main(string[] args)
         {
-            Task.Run(() => test2());
+            Task.Run(() => new NetworkConnectionInitializer().awaitConnections());
             Thread.Sleep(-1);
         }
         async static Task test()
