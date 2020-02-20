@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Threading;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace client
 {
@@ -12,13 +11,31 @@ namespace client
     {
         static void Main(string[] args)
         {
-            Task.Run(() => test());
-            Thread.Sleep(-1);
+            int port = 9001;
+            String ip = "127.0.0.1";
+            if (args.Length == 0)
+            {
+                Task.Run(() => test(ip, port));
+                Thread.Sleep(-1);
+            }
+            if (args.Length < 2)
+            {
+                Task.Run(() => test(args[0], port));
+                Thread.Sleep(-1);
+            }
+            if (Int32.TryParse(args[1], out port))
+            {
+                Task.Run(() => test(args[0], port));
+                Thread.Sleep(-1);
+            }
+            else
+            {
+                Console.WriteLine("Bad argument for remote port.");
+            }
         }
-        async static Task test()
+        async static Task test(string ip, int port)
         {
-            Int32 port = 9001;
-            TcpClient client = new TcpClient("127.0.0.1", port);
+            TcpClient client = new TcpClient(ip, port);
             BinaryWriter bw;
             try
             {
