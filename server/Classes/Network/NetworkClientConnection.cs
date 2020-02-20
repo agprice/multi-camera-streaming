@@ -15,6 +15,11 @@ namespace server.Classes.Network
         {
             Client = client;
             Logger.Info($"Recieved client {client}");
+            sendStream();
+        }
+
+        private void sendStream() {
+
         }
     }
 }
