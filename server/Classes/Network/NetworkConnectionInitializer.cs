@@ -16,6 +16,7 @@ namespace server.Classes.Network
     {
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ICapture Capture = new FfmpegCapture();
+        
         /// <summary>
         /// Start the server and await connections.
         /// </summary>
@@ -32,7 +33,6 @@ namespace server.Classes.Network
                     TcpClient client = server.AcceptTcpClient();
                     Logger.Info($"Connected to {client}");
                     _ = Task.Run(() => new NetworkClientConnection(client, Capture));
-                    NetworkStream stream = client.GetStream();
                 }
             }
             catch (Exception ex)

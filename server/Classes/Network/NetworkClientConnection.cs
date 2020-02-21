@@ -23,7 +23,11 @@ namespace server.Classes.Network
 
         private async Task sendStream()
         {
+            Logger.Info($"Sending stream to client: {Client.Client.RemoteEndPoint}");
+            CaptureProcess.start(null);
             await CaptureProcess.CaptureStream.CopyToAsync(Client.GetStream());
+            Logger.Info($"Finished sending stream to client: {Client.Client.RemoteEndPoint}");
+            Client.Close();
         }
     }
 }
