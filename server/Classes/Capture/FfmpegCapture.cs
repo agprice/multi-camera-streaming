@@ -12,9 +12,9 @@ namespace server.Classes.Capture
 {
     public class FfmpegCapture : ICapture
     {
+        public Stream CaptureStream { get => captureStream; set => captureStream = value; }
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private Stream captureStream;
-        public Stream CaptureStream { get => captureStream; set => captureStream = value; }
         private IOptions lastOptions = null;
         private bool processRunning = false;
         private List<NetworkClientConnection> clientList = new List<NetworkClientConnection>();
@@ -32,16 +32,22 @@ namespace server.Classes.Capture
                     },
             EnableRaisingEvents = true
         };
-
+        /// <summary>
+        /// Initialize a new ffmpeg capture device, and setup the callback for when the process exits.
+        /// </summary>
         public FfmpegCapture()
         {
             process.Exited += ((object sender, System.EventArgs e) =>
             {
                 processRunning = false;
                 Logger.Info("ffmpeg process has exited.");
-                // Logger.Info($"Ffmpeg process exited with code: {process.ExitCode}. It ran for {Math.Round((process.ExitTime - process.StartTime).TotalMilliseconds)}");
             });
         }
+        /// <summary>
+        /// Request the client begin recieving data from the server.
+        /// </summary>
+        /// <param name="options">The set of options to pass to the capture process</param>
+        /// <param name="client">The client who will recieve the stream data</param>
         public void requestStream(IOptions options, NetworkClientConnection client)
         {
             clientList.Add(client);
@@ -60,21 +66,10 @@ namespace server.Classes.Capture
                 Logger.Info("Ffmpeg requested start but was already streaming.");
             }
         }
-
-        public async Task sendDataToClients()
-        {
-            Logger.Info("Sending data to clients");
-            while (processRunning)
-            {
-                byte[] buffer = new byte[2048];
-                await CaptureStream.ReadAsync(buffer, 0, buffer.Length);
-                foreach (var client in clientList)
-                {
-                    client.writeData(buffer);
-                }
-            }
-        }
-
+        /// <summary>
+        /// Remove the client from the list of clients recieving the stream. If no clients are streaming, stop the streaming service.
+        /// </summary>
+        /// <param name="client">The client to be removed from the stream</param>
         public void stopStreaming(NetworkClientConnection client)
         {
             clientList.Remove(client);
@@ -84,6 +79,19 @@ namespace server.Classes.Capture
                 Logger.Info("Stopping ffmpeg process");
                 CaptureStream = null;
                 process.Kill();
+            }
+        }
+        public async Task sendDataToClients()
+        {
+            Logger.Info("Sending data to clients");
+            while (processRunning || CaptureStream.Length > 0)
+            {
+                byte[] buffer = new byte[2048];
+                await CaptureStream.ReadAsync(buffer, 0, buffer.Length);
+                foreach (var client in clientList)
+                {
+                    client.writeData(buffer);
+                }
             }
         }
     }

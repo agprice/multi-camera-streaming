@@ -28,7 +28,7 @@ namespace client
                 Task.Run(() => test(name, args[1], port));
                 Thread.Sleep(-1);
             }
-            if (Int32.TryParse(args[1], out port))
+            if (Int32.TryParse(args[2], out port))
             {
                 Task.Run(() => test(name, args[1], port));
                 Thread.Sleep(-1);
