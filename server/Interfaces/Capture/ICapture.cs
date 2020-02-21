@@ -15,12 +15,12 @@ namespace server.Interfaces.Capture
         /// Start video capturing/ stream
         /// </summary>
         /// <param name="options">Options to use for video</param>
-        void start(IOptions options);
+        void requestStream(IOptions options, NetworkClientConnection client);
 
         /// <summary>
         /// Stop video capturing/ stream
         /// </summary>
-        void stop();
+        void stopStreaming(NetworkClientConnection client);
 
         /// <summary>
         /// This is the process which will perform the capture.

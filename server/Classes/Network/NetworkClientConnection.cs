@@ -1,7 +1,4 @@
-using System;
-using System.Diagnostics;
 using System.Net.Sockets;
-using System.Net;
 using System.Threading.Tasks;
 using NLog;
 using server.Interfaces.Capture;
@@ -17,17 +14,23 @@ namespace server.Classes.Network
         {
             Client = client;
             CaptureProcess = captureProcess;
-            Logger.Info($"Recieved client {client}");
+            Logger.Info($"Recieved client {client.Client.RemoteEndPoint}");
             _ = sendStream();
+        }
+
+        public void writeData(byte[] buffer)
+        {
+            Logger.Info("Writing buffer to client stream");
+            Client.GetStream().Write(buffer);
         }
 
         private async Task sendStream()
         {
             Logger.Info($"Sending stream to client: {Client.Client.RemoteEndPoint}");
-            CaptureProcess.start(null);
-            await CaptureProcess.CaptureStream.CopyToAsync(Client.GetStream());
+            CaptureProcess.requestStream(null, this);
+            // await CaptureProcess.CaptureStream.CopyToAsync(Client.GetStream());
             Logger.Info($"Finished sending stream to client: {Client.Client.RemoteEndPoint}");
-            Client.Close();
+            // Client.Close();
         }
     }
 }
