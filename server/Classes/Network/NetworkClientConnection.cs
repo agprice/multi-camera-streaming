@@ -20,7 +20,6 @@ namespace server.Classes.Network
 
         public void writeData(byte[] buffer)
         {
-            Logger.Info("Writing buffer to client stream");
             Client.GetStream().Write(buffer);
         }
 
