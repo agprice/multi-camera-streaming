@@ -4,22 +4,26 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading.Tasks;
 using NLog;
+using server.Interfaces.Capture;
 
 namespace server.Classes.Network
 {
     public class NetworkClientConnection
     {
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        TcpClient Client;
-        public NetworkClientConnection(TcpClient client)
+        private TcpClient Client;
+        private ICapture CaptureProcess;
+        public NetworkClientConnection(TcpClient client, ICapture captureProcess)
         {
             Client = client;
+            CaptureProcess = captureProcess;
             Logger.Info($"Recieved client {client}");
-            sendStream();
+            _ = sendStream();
         }
 
-        private void sendStream() {
-
+        private async Task sendStream()
+        {
+            await CaptureProcess.CaptureStream.CopyToAsync(Client.GetStream());
         }
     }
 }
