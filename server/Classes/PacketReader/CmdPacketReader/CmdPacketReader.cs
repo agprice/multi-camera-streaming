@@ -4,6 +4,5 @@ namespace server.Classes.PacketReader.CmdPacketReader
 {
     public class CmdPacketReader : ICmdPacketReader
     {
-
     }
 }
