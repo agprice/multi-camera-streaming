@@ -22,7 +22,7 @@ namespace client.Classes.CmdPacketWriter
             cmdPacket[1] = (byte)(cmdPacket[1] | networkType);
             try
             {
-                stream.Write(cmdPacket, 0, 2);
+                stream.Write(cmdPacket, 0, cmdPacket.Length);
                 logger.Info($"Command packet written: {cmdPacket[0]}, {cmdPacket[1]}");
             }
             catch(Exception ex)
