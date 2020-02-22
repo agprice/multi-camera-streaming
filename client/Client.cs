@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
 using client.Interfaces.PacketWriter.CmdPacketWriter;
-using client.Classes.CmdPacketWriter;
+using client.Classes.PacketWriter.CmdPacketWriter;
 
 namespace client
 {
@@ -16,6 +16,7 @@ namespace client
             int port = 9001;
             string ip = "127.0.0.1";
             string name = "test-tcp.mp4";
+
             if (args[0] != null)
             {
                 name = args[0];

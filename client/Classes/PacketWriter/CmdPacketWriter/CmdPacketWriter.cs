@@ -5,7 +5,7 @@ using NLog;
 
 using client.Interfaces.PacketWriter.CmdPacketWriter;
 
-namespace client.Classes.CmdPacketWriter
+namespace client.Classes.PacketWriter.CmdPacketWriter
 {
     public class CmdPacketWriter : ICmdPacketWriter
     {
@@ -23,7 +23,6 @@ namespace client.Classes.CmdPacketWriter
             try
             {
                 stream.Write(cmdPacket, 0, cmdPacket.Length);
-                logger.Info($"Command packet written: {cmdPacket[0]}, {cmdPacket[1]}");
             }
             catch(Exception ex)
             {
