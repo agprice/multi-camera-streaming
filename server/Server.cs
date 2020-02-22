@@ -6,6 +6,9 @@ using System.Threading;
 using System.Net.Sockets;
 using System.Net;
 using server.Classes.Network;
+using server.Classes.PacketReader.CmdPacketReader;
+using server.Interfaces.PacketReader.CmdPacketReader;
+
 namespace server
 {
     public class Server
@@ -14,6 +17,25 @@ namespace server
         {
             Task.Run(() => new NetworkConnectionInitializer().awaitConnections());
             Thread.Sleep(-1);
+        }
+        static void TestReceivePackets()
+        {
+            Int32 port = 9001;
+            IPAddress localAddr = IPAddress.Parse("127.0.0.1");
+            ICmdPacketReader reader = new CmdPacketReader();
+            var server = new TcpListener(IPAddress.Any, port);
+            server.Start();
+
+            try{
+                var client = server.AcceptTcpClient();
+                var tempBuffer = new byte[1];
+                client.GetStream().Read(tempBuffer, 0, 1);
+                var buffer = reader.readCmdPacket(client.GetStream());
+            }
+            catch(IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
         async static Task test()
         {

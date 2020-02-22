@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
+using client.Interfaces.PacketWriter.CmdPacketWriter;
+using client.Classes.CmdPacketWriter;
 
 namespace client
 {
@@ -37,6 +39,20 @@ namespace client
             {
                 Console.WriteLine("Bad argument for remote port.");
             }
+        }
+        static void testBytesPacket(int port, string ip)
+        {
+            TcpClient client = new TcpClient(ip, port);
+            ICmdPacketWriter cmdPacket = new CmdPacketWriter(); 
+            try{
+                cmdPacket.writeCmdPacket(client.GetStream(), 1, 1);
+                Console.WriteLine("Buffer written");
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            client.Close();
         }
         async static Task test(string name, string ip, int port)
         {
