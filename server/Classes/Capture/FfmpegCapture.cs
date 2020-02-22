@@ -50,8 +50,8 @@ namespace server.Classes.Capture
         /// <param name="client">The client who will recieve the stream data</param>
         public void requestStream(IOptions options, NetworkClientConnection client)
         {
+            Logger.Info($"Client {client.getRemoteEndpoint()} requesting streaming start");
             clientList.Add(client);
-            Logger.Info("Client requesting streaming start");
             if (!processRunning)
             {
                 Logger.Info("Starting the ffmpeg process");
@@ -63,7 +63,7 @@ namespace server.Classes.Capture
             }
             else
             {
-                Logger.Info("Ffmpeg requested start but was already streaming.");
+                Logger.Info("ffmpeg requested start but was already streaming.");
             }
         }
         /// <summary>
@@ -81,12 +81,17 @@ namespace server.Classes.Capture
                 process.Kill();
             }
         }
-        public async Task sendDataToClients()
+        /// <summary>
+        /// This async function reads from the stream buffer that ffmpeg is returning, 
+        /// and passes that data to all the connected clients.
+        /// </summary>
+        /// <returns>A task</returns>
+        private async Task sendDataToClients()
         {
             Logger.Info("Sending data to clients");
             while (processRunning || CaptureStream.Length > 0)
             {
-                byte[] buffer = new byte[2048];
+                byte[] buffer = new byte[4096];
                 await CaptureStream.ReadAsync(buffer, 0, buffer.Length);
                 Parallel.ForEach(clientList, client =>
                 {

@@ -1,7 +1,8 @@
 using System.Net.Sockets;
-using System.Threading.Tasks;
 using NLog;
 using server.Interfaces.Capture;
+using System.Net;
+using System.Threading;
 
 namespace server.Classes.Network
 {
@@ -15,21 +16,35 @@ namespace server.Classes.Network
             Client = client;
             CaptureProcess = captureProcess;
             Logger.Info($"Recieved client {client.Client.RemoteEndPoint}");
-            _ = sendStream();
+            requestStream();
         }
 
+        /// <summary>
+        /// Write the given data to the client
+        /// </summary>
+        /// <param name="buffer">The data to write to the client</param>
         public void writeData(byte[] buffer)
         {
             Client.GetStream().Write(buffer);
         }
 
-        private async Task sendStream()
+        /// <summary>
+        /// Requests a copy of the stream from the ICapture device.
+        /// </summary>
+        private void requestStream()
         {
-            Logger.Info($"Sending stream to client: {Client.Client.RemoteEndPoint}");
+            Logger.Info($"Requesting stream for client: {Client.Client.RemoteEndPoint}");
             CaptureProcess.requestStream(null, this);
-            // await CaptureProcess.CaptureStream.CopyToAsync(Client.GetStream());
-            // Logger.Info($"Finished sending stream to client: {Client.Client.RemoteEndPoint}");
-            // Client.Close();
+        }
+
+        private void requestStreamStop() {
+            Logger.Info($"Requesting stream stop for client {Client.Client.RemoteEndPoint}");
+            CaptureProcess.stopStreaming(this);
+        }
+
+        public EndPoint getRemoteEndpoint()
+        {
+            return Client.Client.RemoteEndPoint;
         }
     }
 }
