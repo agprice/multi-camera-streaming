@@ -88,10 +88,10 @@ namespace server.Classes.Capture
             {
                 byte[] buffer = new byte[2048];
                 await CaptureStream.ReadAsync(buffer, 0, buffer.Length);
-                foreach (var client in clientList)
+                Parallel.ForEach(clientList, client =>
                 {
                     client.writeData(buffer);
-                }
+                });
             }
         }
     }

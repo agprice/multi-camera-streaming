@@ -28,7 +28,7 @@ namespace server.Classes.Network
             Logger.Info($"Sending stream to client: {Client.Client.RemoteEndPoint}");
             CaptureProcess.requestStream(null, this);
             // await CaptureProcess.CaptureStream.CopyToAsync(Client.GetStream());
-            Logger.Info($"Finished sending stream to client: {Client.Client.RemoteEndPoint}");
+            // Logger.Info($"Finished sending stream to client: {Client.Client.RemoteEndPoint}");
             // Client.Close();
         }
     }
