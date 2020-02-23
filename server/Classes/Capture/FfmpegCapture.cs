@@ -21,20 +21,9 @@ namespace server.Classes.Capture
         private bool processRunning = false;
         private List<NetworkClientConnection> clientList = new List<NetworkClientConnection>();
         private IConfigurationRoot configuration;
-        private Process process = new Process
-        {
-            StartInfo =
-                    {
-                        FileName = "ffmpeg",
-                        Arguments = "-hide_banner -loglevel error -vaapi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 60 -vsync 2 -f x11grab -i :0.0+0,0 -vf format=nv12,hwupload -vcodec h264_vaapi -crf 23 -tune zerolatency -preset ultrafast -f mpegts pipe:1",
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardInput = false,
-                        RedirectStandardError = false,
-                        CreateNoWindow = true
-                    },
-            EnableRaisingEvents = true
-        };
+        private int bufferSize = 4096;
+        private Process process;
+
         /// <summary>
         /// Initialize a new ffmpeg capture device, and setup the callback for when the process exits.
         /// </summary>
@@ -45,6 +34,23 @@ namespace server.Classes.Capture
             .AddJsonFile(ConfigRuntimeConstants.SETTINGS_FILE, optional: false, reloadOnChange: true);
             configuration = builder.Build();
             var ffmpegconf = configuration.GetSection(ConfigRuntimeConstants.FFMPEG)[ConfigRuntimeConstants.OS];
+            bufferSize = Int32.Parse(configuration.GetSection(ConfigRuntimeConstants.NETWORK)["port"]);
+
+            process = new Process
+            {
+                StartInfo =
+                    {
+                        FileName = "ffmpeg",
+                        Arguments = ffmpegconf,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardInput = false,
+                        RedirectStandardError = false,
+                        CreateNoWindow = true
+                    },
+                EnableRaisingEvents = true
+            };
+
             process.Exited += ((object sender, System.EventArgs e) =>
             {
                 processRunning = false;
@@ -89,6 +95,7 @@ namespace server.Classes.Capture
                 process.Kill();
             }
         }
+
         /// <summary>
         /// This async function reads from the stream buffer that ffmpeg is returning, 
         /// and passes that data to all the connected clients.
@@ -99,7 +106,7 @@ namespace server.Classes.Capture
             Logger.Info("Sending data to clients");
             while (processRunning || CaptureStream.Length > 0)
             {
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[bufferSize];
                 await CaptureStream.ReadAsync(buffer, 0, buffer.Length);
                 Parallel.ForEach(clientList, client =>
                 {
