@@ -6,6 +6,7 @@ using NLog;
 using server.Interfaces.Capture;
 using server.Interfaces.PacketReader.CmdPacketReader;
 using server.Classes.PacketReader.CmdPacketReader;
+using System.Net;
 
 namespace server.Classes.Network
 {

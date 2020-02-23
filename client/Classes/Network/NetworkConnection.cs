@@ -28,7 +28,7 @@ namespace client.Classes.Network
             _cmdWriter.writeCmdPacket(_client.GetStream(), 1, (byte) connType);
 
             _ = Task.Run(() => new NetworkClient(_client.GetStream(), args[args.Length - 1]));
-            Console.WriteLine("q to exit");
+            Console.WriteLine("Press any key to stop stream");
             var key = Console.ReadKey();
             _cmdWriter.writeCmdPacket(_client.GetStream(), 0, 0);
         }
