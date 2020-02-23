@@ -1,8 +1,12 @@
 using System.Net.Sockets;
+using System.Threading.Tasks;
+
 using NLog;
+
 using server.Interfaces.Capture;
+using server.Interfaces.PacketReader.CmdPacketReader;
+using server.Classes.PacketReader.CmdPacketReader;
 using System.Net;
-using System.Threading;
 
 namespace server.Classes.Network
 {
@@ -11,12 +15,14 @@ namespace server.Classes.Network
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private TcpClient Client;
         private ICapture CaptureProcess;
+        private readonly ICmdPacketReader cmdReader = new CmdPacketReader();
+
         public NetworkClientConnection(TcpClient client, ICapture captureProcess)
         {
             Client = client;
             CaptureProcess = captureProcess;
             Logger.Info($"Recieved client {client.Client.RemoteEndPoint}");
-            requestStream();
+            _ = beginNetworkConnection();
         }
 
         /// <summary>
@@ -28,10 +34,19 @@ namespace server.Classes.Network
             Client.GetStream().Write(buffer);
         }
 
-        /// <summary>
-        /// Requests a copy of the stream from the ICapture device.
-        /// </summary>
-        private void requestStream()
+        private async Task beginNetworkConnection()
+        {
+            var buffer = new byte[2];
+            Client.GetStream().Read(buffer, 0, 1);
+            Logger.Info("reading command packet");
+            if(buffer[0] == 1) buffer = await cmdReader.readCmdPacket(Client.GetStream());
+            if(buffer[1] == 1) await sendStream();
+            await Client.GetStream().ReadAsync(buffer, 0, 1);
+            buffer = await cmdReader.readCmdPacket(Client.GetStream());
+            if(buffer[1] == 0) await stopStreams();
+        }
+
+        private async Task sendStream()
         {
             Logger.Info($"Requesting stream for client: {Client.Client.RemoteEndPoint}");
             CaptureProcess.requestStream(null, this);
@@ -45,6 +60,11 @@ namespace server.Classes.Network
         public EndPoint getRemoteEndpoint()
         {
             return Client.Client.RemoteEndPoint;
+        }
+
+        private async Task stopStreams()
+        {
+            CaptureProcess.stopStreaming(this);
         }
     }
 }

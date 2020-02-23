@@ -4,39 +4,34 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
+using client.Interfaces.PacketWriter.CmdPacketWriter;
+using client.Classes.PacketWriter.CmdPacketWriter;
+using client.Classes.Network;
 
 namespace client
 {
-    class Program
+    class Client
     {
         static void Main(string[] args)
         {
             int port = 9001;
             string ip = "127.0.0.1";
             string name = "test-tcp.mp4";
-            if (args.Length >= 1)
-            {
-                name = args[0];
+            var client = new NetworkConnection(new string[]{ip, "tcp", name});
+        }
+        static void testBytesPacket(int port, string ip)
+        {
+            TcpClient client = new TcpClient(ip, port);
+            ICmdPacketWriter cmdPacket = new CmdPacketWriter(); 
+            try{
+                cmdPacket.writeCmdPacket(client.GetStream(), 1, 1);
+                Console.WriteLine("Buffer written");
             }
-            if (args.Length <= 1)
+            catch(Exception ex)
             {
-                Task.Run(() => test(name, ip, port));
-                Thread.Sleep(-1);
+                Console.WriteLine(ex.Message);
             }
-            if (args.Length < 3)
-            {
-                Task.Run(() => test(name, args[1], port));
-                Thread.Sleep(-1);
-            }
-            if (Int32.TryParse(args[2], out port))
-            {
-                Task.Run(() => test(name, args[1], port));
-                Thread.Sleep(-1);
-            }
-            else
-            {
-                Console.WriteLine("Bad argument for remote port.");
-            }
+            client.Close();
         }
         async static Task test(string name, string ip, int port)
         {
