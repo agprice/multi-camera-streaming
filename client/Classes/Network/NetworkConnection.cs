@@ -16,6 +16,10 @@ namespace client.Classes.Network
         private static int _port = 9001;
         private TcpClient _client;
 
+        /// <summary>
+        /// Set of connection
+        /// </summary>
+        /// <param name="args">Arguments from the client</param>
         public NetworkConnection(string[] args)
         {
             _client = new TcpClient(args[0], _port);
@@ -24,6 +28,7 @@ namespace client.Classes.Network
             _cmdWriter.writeCmdPacket(_client.GetStream(), 1, (byte) connType);
 
             _ = Task.Run(() => new NetworkClient(_client.GetStream(), args[args.Length - 1]));
+
         }
     }
 }
