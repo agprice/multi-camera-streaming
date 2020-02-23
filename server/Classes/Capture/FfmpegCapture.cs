@@ -71,6 +71,10 @@ namespace server.Classes.Capture
                 Logger.Info("Starting the ffmpeg process");
                 processRunning = true;
                 process.ErrorDataReceived += new DataReceivedEventHandler((o, e) => throw new ApplicationException(e.Data));
+                if (options != null)
+                {
+                    process.StartInfo.Arguments = options.getOptions();
+                }
                 process.Start();
                 Task.Run(() => sendDataToClients());
                 CaptureStream = process.StandardOutput.BaseStream;
