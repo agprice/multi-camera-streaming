@@ -7,6 +7,8 @@ using System.IO;
 using server.Classes.Network;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using server.Classes.Constants;
 
 namespace server.Classes.Capture
 {
@@ -18,6 +20,7 @@ namespace server.Classes.Capture
         private IOptions lastOptions = null;
         private bool processRunning = false;
         private List<NetworkClientConnection> clientList = new List<NetworkClientConnection>();
+        private IConfigurationRoot configuration;
         private Process process = new Process
         {
             StartInfo =
@@ -37,6 +40,11 @@ namespace server.Classes.Capture
         /// </summary>
         public FfmpegCapture()
         {
+            // TODO: Actually use the config now
+            var builder = new ConfigurationBuilder()
+            .AddJsonFile(ConfigRuntimeConstants.SETTINGS_FILE, optional: false, reloadOnChange: true);
+            configuration = builder.Build();
+            var ffmpegconf = configuration.GetSection(ConfigRuntimeConstants.FFMPEG)[ConfigRuntimeConstants.OS];
             process.Exited += ((object sender, System.EventArgs e) =>
             {
                 processRunning = false;
@@ -74,7 +82,7 @@ namespace server.Classes.Capture
         {
             clientList.Remove(client);
             Logger.Info($"Client has stopped streaming. Currently {clientList.Count} clients are streaming.");
-            if (clientList.Count == 0)
+            if (clientList.Count == 0 && processRunning)
             {
                 Logger.Info("Stopping ffmpeg process");
                 CaptureStream = null;
