@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using server.Classes.Constants;
+using server.Classes.Options;
 
 namespace server.Classes.Capture
 {
@@ -33,15 +34,14 @@ namespace server.Classes.Capture
             var builder = new ConfigurationBuilder()
             .AddJsonFile(ConfigRuntimeConstants.SETTINGS_FILE, optional: false, reloadOnChange: true);
             configuration = builder.Build();
-            var ffmpegconf = configuration.GetSection(ConfigRuntimeConstants.FFMPEG)[ConfigRuntimeConstants.OS];
+            lastOptions = new FfmpegOptions(configuration.GetSection(ConfigRuntimeConstants.FFMPEG)[ConfigRuntimeConstants.OS]);
             bufferSize = Int32.Parse(configuration.GetSection(ConfigRuntimeConstants.NETWORK)["port"]);
-
             process = new Process
             {
                 StartInfo =
                     {
                         FileName = "ffmpeg",
-                        Arguments = ffmpegconf,
+                        Arguments = lastOptions.getOptions(),
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
                         RedirectStandardInput = false,
