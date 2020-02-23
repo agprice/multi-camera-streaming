@@ -1,9 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading.Tasks;
+
 using NLog;
+
 using server.Interfaces.Capture;
 using server.Classes.Capture;
 
@@ -16,7 +17,7 @@ namespace server.Classes.Network
     {
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly ICapture Capture = new FfmpegCapture();
-        
+
         /// <summary>
         /// Start the server and await connections.
         /// </summary>

@@ -1,5 +1,6 @@
 using System;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 using NLog;
 
@@ -11,12 +12,12 @@ namespace server.Classes.PacketReader.CmdPacketReader
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public byte[] readCmdPacket(NetworkStream stream)
+        public async Task<byte[]> readCmdPacket(NetworkStream stream)
         {
             var buffer = new byte[2];
             try
             {
-                stream.Read(buffer, 0, 1);
+                await stream.ReadAsync(buffer, 0, 1);
                 Console.WriteLine(buffer[0]);
                 buffer[1] = (byte) (buffer[0] >> 1);
                 buffer[0] = (byte) ((buffer[0] ^ buffer[1]) >> 1);

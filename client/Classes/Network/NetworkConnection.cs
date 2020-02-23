@@ -23,12 +23,14 @@ namespace client.Classes.Network
         public NetworkConnection(string[] args)
         {
             _client = new TcpClient(args[0], _port);
-            Console.WriteLine("Connection Established to server");
+            Console.WriteLine("Connection established to server");
             var connType = (args[1].ToLower().Equals("tcp")) ? 1 : 0;
             _cmdWriter.writeCmdPacket(_client.GetStream(), 1, (byte) connType);
 
             _ = Task.Run(() => new NetworkClient(_client.GetStream(), args[args.Length - 1]));
-
+            Console.WriteLine("q to exit");
+            var key = Console.ReadKey();
+            _cmdWriter.writeCmdPacket(_client.GetStream(), 0, 0);
         }
     }
 }

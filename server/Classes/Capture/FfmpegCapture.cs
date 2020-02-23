@@ -23,7 +23,7 @@ namespace server.Classes.Capture
             StartInfo =
                     {
                         FileName = "ffmpeg",
-                        Arguments = "-hide_banner -loglevel error -vaapi_device /dev/dri/renderD128 -video_size 1920x1080 -framerate 60 -vsync 2 -f x11grab -i :0.0+0,0 -vf format=nv12,hwupload -vcodec h264_vaapi -crf 23 -tune zerolatency -preset ultrafast -f mpegts pipe:1",
+                        Arguments = "-hide_banner -loglevel error  -video_size 1920x1080 -framerate 60 -vsync 2 -f x11grab -i :0.0+0,0 -tune zerolatency -preset ultrafast -f mpegts pipe:1",
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
                         RedirectStandardInput = false,

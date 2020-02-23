@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Threading;
 using client.Interfaces.PacketWriter.CmdPacketWriter;
 using client.Classes.PacketWriter.CmdPacketWriter;
+using client.Classes.Network;
 
 namespace client
 {
@@ -16,7 +17,8 @@ namespace client
             int port = 9001;
             string ip = "127.0.0.1";
             string name = "test-tcp.mp4";
-
+            var client = new NetworkConnection(new string[]{ip, "tcp", name});
+/* 
             if (args[0] != null)
             {
                 name = args[0];
@@ -39,7 +41,7 @@ namespace client
             else
             {
                 Console.WriteLine("Bad argument for remote port.");
-            }
+            } */
         }
         static void testBytesPacket(int port, string ip)
         {
