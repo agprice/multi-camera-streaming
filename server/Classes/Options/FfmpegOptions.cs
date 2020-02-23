@@ -5,7 +5,10 @@ namespace server.Classes.Options
     public class FfmpegOptions : IOptions
     {
         private string currentOptions = "";
+        public FfmpegOptions()
+        {
 
+        }
         public FfmpegOptions(string options)
         {
             currentOptions = options;
