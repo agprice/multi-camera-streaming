@@ -18,30 +18,6 @@ namespace client
             string ip = "127.0.0.1";
             string name = "test-tcp.mp4";
             var client = new NetworkConnection(new string[]{ip, "tcp", name});
-/* 
-            if (args[0] != null)
-            {
-                name = args[0];
-            }
-            if (args.Length <= 1)
-            {
-                Task.Run(() => test(name, ip, port));
-                Thread.Sleep(-1);
-            }
-            if (args.Length < 3)
-            {
-                Task.Run(() => test(name, args[1], port));
-                Thread.Sleep(-1);
-            }
-            if (Int32.TryParse(args[2], out port))
-            {
-                Task.Run(() => test(name, args[1], port));
-                Thread.Sleep(-1);
-            }
-            else
-            {
-                Console.WriteLine("Bad argument for remote port.");
-            } */
         }
         static void testBytesPacket(int port, string ip)
         {

@@ -3,8 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Net.Sockets;
-using System.Net;
 using server.Classes.Network;
 using server.Classes.PacketReader.CmdPacketReader;
 using server.Interfaces.PacketReader.CmdPacketReader;

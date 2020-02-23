@@ -24,6 +24,10 @@ namespace server.Classes.Network
             _ = beginNetworkConnection();
         }
 
+        /// <summary>
+        /// Write the given data to the client
+        /// </summary>
+        /// <param name="buffer">The data to write to the client</param>
         public void writeData(byte[] buffer)
         {
             Client.GetStream().Write(buffer);
@@ -43,11 +47,18 @@ namespace server.Classes.Network
 
         private async Task sendStream()
         {
-            Logger.Info($"Sending stream to client: {Client.Client.RemoteEndPoint}");
+            Logger.Info($"Requesting stream for client: {Client.Client.RemoteEndPoint}");
             CaptureProcess.requestStream(null, this);
-            // await CaptureProcess.CaptureStream.CopyToAsync(Client.GetStream());
-            // Logger.Info($"Finished sending stream to client: {Client.Client.RemoteEndPoint}");
-            // Client.Close();
+        }
+
+        private void requestStreamStop() {
+            Logger.Info($"Requesting stream stop for client {Client.Client.RemoteEndPoint}");
+            CaptureProcess.stopStreaming(this);
+        }
+
+        public EndPoint getRemoteEndpoint()
+        {
+            return Client.Client.RemoteEndPoint;
         }
 
         private async Task stopStreams()

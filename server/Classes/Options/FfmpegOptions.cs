@@ -4,19 +4,30 @@ namespace server.Classes.Options
 {
     public class FfmpegOptions : IOptions
     {
+        private string currentOptions = "";
+        public FfmpegOptions()
+        {
+
+        }
+        public FfmpegOptions(string options)
+        {
+            currentOptions = options;
+        }
+
         public void add(string options)
         {
-            throw new System.NotImplementedException();
+            options += options;
         }
 
         public string getOptions()
         {
-            throw new System.NotImplementedException();
+            return currentOptions;
         }
 
         public void remove(string options)
         {
-            throw new System.NotImplementedException();
+            int index = currentOptions.IndexOf(options);
+            currentOptions = (index < 0) ? currentOptions : currentOptions.Remove(index, options.Length);
         }
     }
 }

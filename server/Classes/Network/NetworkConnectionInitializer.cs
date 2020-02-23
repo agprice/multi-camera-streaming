@@ -32,14 +32,13 @@ namespace server.Classes.Network
                 while (true)
                 {
                     TcpClient client = server.AcceptTcpClient();
-                    Logger.Info($"Connected to {client}");
+                    Logger.Info($"Connected to {client.Client.RemoteEndPoint}");
                     _ = Task.Run(() => new NetworkClientConnection(client, Capture));
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("error global.");
+                Logger.Error(ex, "Global exception was hit in the network initializer.");
             }
         }
 
