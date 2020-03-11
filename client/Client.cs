@@ -7,6 +7,7 @@ using System.Threading;
 using client.Interfaces.PacketWriter.CmdPacketWriter;
 using client.Classes.PacketWriter.CmdPacketWriter;
 using client.Classes.Network;
+using System.Linq;
 
 namespace client
 {
@@ -17,7 +18,7 @@ namespace client
             int port = 9001;
             string ip = "127.0.0.1";
             string name = "test-tcp.mp4";
-            var client = new NetworkConnection(new string[]{ip, "tcp", name});
+            var client = new NetworkConnection(args.ToList());
         }
         static void testBytesPacket(int port, string ip)
         {
