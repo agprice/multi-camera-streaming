@@ -27,28 +27,31 @@ namespace client.Classes.Network
         /// <param name="args">Arguments from the client</param>
         public NetworkConnection(List<string> args)
         {
+            // Get IP address
+            Console.WriteLine("Connecting to server");
             _client = new TcpClient(args[0], _port);
             args.RemoveAt(0);
 
-            Console.WriteLine("Connecting to server");
+            //var connType = (args[0].ToLower().Equals("tcp")) ? 1 : 0;
+            //args.RemoveAt(0);
 
-            var connType = (args[0].ToLower().Equals("tcp")) ? 1 : 0;
-
-            Console.WriteLine("Requesting " + args[0] + " connection");
-            args.RemoveAt(0);
-            _cmdWriter.writeCmdPacket(_client.GetStream(), 1, (byte) connType);
-
+            // Stream or file save
             var serviceType = args[0];
             args.RemoveAt(0);
             
             string fileName = null;
-            if(args[0].ToLower().Equals("stream"))
+            // if it's a save service type then save the file locally
+            if(args[0].ToLower().Equals("save"))
             {
                 fileName = args[0];
                 args.RemoveAt(0);
             }
             
             _optWriter.writeOptsPacket(_client.GetStream(), args);
+
+            // Connect stream and write command packet
+            Console.WriteLine("Requesting connection");
+            _cmdWriter.writeCmdPacket(_client.GetStream(), 1, 1);
 
             _ = Task.Run(() => new NetworkClient(_client.GetStream(), fileName));
 

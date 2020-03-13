@@ -17,6 +17,7 @@ namespace client.Classes.PacketWriter.CmdPacketWriter
 
         public void writeCmdPacket(NetworkStream stream, byte cmdType, byte networkType)
         {
+            // Need two bytes, one for the connection type and one for the command type (on or off) as well as the packet type
             var cmdPacket = new byte[] {1, 0};
             cmdPacket[1] = (byte)((cmdPacket[1] | cmdType) << 1);
             cmdPacket[1] = (byte)(cmdPacket[1] | networkType);
