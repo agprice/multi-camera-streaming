@@ -41,7 +41,7 @@ namespace client.Classes.PacketWriter.OptsPacketWriter
         private void argSanityCheck(List<string> args)
         {
             // Check to see if at least 2 arguments exist or if the number of flags matches the number of arguments
-            if(args.Count < 2 || args.Count % 2 != 0) throw new ArgumentException("There are not enough arguments to pass to ffmpeg");
+            if(args.Count % 2 != 0) throw new ArgumentException("There are not enough arguments to pass to ffmpeg");
 
             // Check if the flags are supported
             var flags = args.Where(str => str.Contains('-')).Select(str => str.Replace("-", "")).ToList();
