@@ -53,6 +53,7 @@ namespace client.Classes.Network
         {
             _logger.Info($"Disconnecting from {_ip}: {this.ToString()}");
             _cmdWriter.writeCmdPacket(_client.GetStream(), 0, 0);
+            _client.Close();
         }
 
         /// <summary>
