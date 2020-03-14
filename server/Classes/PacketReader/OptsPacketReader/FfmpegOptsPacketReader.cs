@@ -1,5 +1,6 @@
-using System.Net.Sockets;
 using System.Text;
+using System.Net.Sockets;
+using System.Threading.Tasks;
 
 using server.Interfaces.Options;
 using server.Interfaces.PacketReader.OptsPacketReader;
@@ -12,7 +13,7 @@ namespace server.Classes.PacketReader.OptsPacketReader
     {
         public FfmpegOptsPacketReader() { }
 
-        public IOptions receiveOptions(NetworkStream stream)
+        public async Task<IOptions> receiveOptions(NetworkStream stream)
         {
             var buffer = new byte[256];
             var message = new StringBuilder();

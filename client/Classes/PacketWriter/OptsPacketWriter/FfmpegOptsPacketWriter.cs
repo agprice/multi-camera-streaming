@@ -18,17 +18,19 @@ namespace client.Classes.PacketWriter.OptsPacketWriter
 
         public void writeOptsPacket(NetworkStream stream, List<string> args)
         {
-            // TODO: need to read list to make sure the values are true
+            // Checks for allowed values
             argSanityCheck(args);
 
-            var cmdPacket = new byte[args.Count + 1];
-            cmdPacket[0] = 0;
-            //Append args as byte array
-            Array.Copy(args.SelectMany(s => Encoding.ASCII.GetBytes(s)).ToArray(), 0, cmdPacket, 1, args.Count);
+            // Convert list to string then to byte array to send to the network
+            var argsAsBytes = Encoding.ASCII.GetBytes(string.Join(" ", args));
+            var optPacket = new byte[argsAsBytes.Length + 1];
+            optPacket[0] = 0;
+            //Append argument string as byte array
+            Array.Copy(argsAsBytes, 0, optPacket, 1, argsAsBytes.Length);
 
             try
             {
-                stream.Write(cmdPacket, 0, cmdPacket.Length);
+                stream.Write(optPacket, 0, optPacket.Length);
             }
             catch(Exception ex)
             {
@@ -49,16 +51,16 @@ namespace client.Classes.PacketWriter.OptsPacketWriter
             }
             
             // Determine whether the user has actually 
-            if(!Enum.IsDefined(typeof(Arguments), flags.First(x => x.Equals("capture_device")))) throw new ArgumentException("A capture device must be set");
+            if(!Enum.IsDefined(typeof(Arguments), flags.First(x => x.Equals(Arguments.f.ToString())))) throw new ArgumentException("A capture device must be set");
         }
 
         private enum Arguments
         {
-            capture_device,
+            f,
             crf,
-            max_bitrate,
-            const_bitrate,
-            hencoding
+            maxrate,
+            constrate,
+            hwaccel
         }
     }
 }

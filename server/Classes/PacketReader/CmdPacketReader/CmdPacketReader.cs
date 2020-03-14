@@ -18,7 +18,6 @@ namespace server.Classes.PacketReader.CmdPacketReader
             try
             {
                 await stream.ReadAsync(buffer, 0, 1);
-                Console.WriteLine(buffer[0]);
                 buffer[1] = (byte) (buffer[0] >> 1);
                 buffer[0] = (byte) ((buffer[0] ^ buffer[1]) >> 1);
                 logger.Info($"Cmd packet read {buffer[0]}, {buffer[1]}");
