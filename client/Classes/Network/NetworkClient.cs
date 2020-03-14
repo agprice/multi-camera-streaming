@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using client.Classes.Display;
+using client.Interfaces.Display;
 
 using NLog;
 namespace client.Classes.Network
@@ -18,7 +20,8 @@ namespace client.Classes.Network
         }
         public async Task readStream(string file = null)
         {
-            if(file != null){
+            if (file != null)
+            {
                 try
                 {
                     var bw = new BinaryWriter(new FileStream(file, FileMode.Create));
@@ -28,15 +31,17 @@ namespace client.Classes.Network
                     bw?.Close();
                     _logger.Info($"Done writing to file {file}");
                 }
-                catch(IOException ex)
+                catch (IOException ex)
                 {
                     _logger.Error(ex.Message);
                 }
             }
             else
             {
+                IDisplay display = new MpvDisplay(_stream);
+                _ = display.startDisplay();
                 // TODO: Create direct streaming using mpv
             }
-        } 
+        }
     }
 }

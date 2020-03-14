@@ -1,4 +1,3 @@
-using System;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -41,7 +40,7 @@ namespace client.Classes.Network
             _logger.Info($"Connecting to server: {ip}, on port {port}");
             var connType = (transportType.ToLower().Equals("tcp")) ? 1 : 0;
             _cmdWriter.writeCmdPacket(_client.GetStream(), 1, (byte)connType);
-
+            _logger.Info(name);
             _ = Task.Run(() => new NetworkClient(_client.GetStream(), name));
 
         }

@@ -17,7 +17,7 @@ namespace client
             IConfigurationRoot configuration = builder.Build();
             string port = configuration.GetSection(ConfigRuntimeConstants.NETWORK)["port"];
             string ip = "127.0.0.1";
-            string name = "test-tcp";
+            string name = null;
             string cmd = "";
             // This dictionary keeps track of all the connections
             IDictionary<string, NetworkConnection> serverDictionary = new Dictionary<string, NetworkConnection>();
@@ -47,7 +47,7 @@ namespace client
                             {
                                 name = commandArgs[2];
                             }
-                            Task.Run(() => serverDictionary[ip].ConnectTo(ip, "tcp", name + ".mp4", Int32.Parse(port)));
+                            Task.Run(() => serverDictionary[ip].ConnectTo(ip, "tcp", name, Int32.Parse(port)));
                         }
                         else
                         {

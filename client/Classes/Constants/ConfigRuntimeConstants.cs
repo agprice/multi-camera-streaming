@@ -3,7 +3,7 @@ namespace client.Classes.Constants
 {
     public class ConfigRuntimeConstants
     {
-        public static readonly string FFMPEG = "ffmpeg";
+        public static readonly string MPV = "mpv";
         public static readonly string NETWORK = "network";
         public static readonly string SETTINGS_FILE = "appsettings.json";
         public static string OS
