@@ -20,44 +20,58 @@ namespace client.Classes.Network
         private readonly IOptPacketWriter _optWriter = new FfmpegOptsPacketWriter();
         private static int _port = 9001;
         private TcpClient _client;
+        private string _name = null;
+        private string _ip = null;
 
         /// <summary>
         /// Set of connection
         /// </summary>
-        /// <param name="args">Arguments from the client</param>
-        public NetworkConnection(List<string> args)
+        public NetworkConnection()
         {
-            // Get IP address
-            Console.WriteLine("Connecting to server");
-            _client = new TcpClient(args[0], _port);
-            args.RemoveAt(0);
+        }
 
-            //var connType = (args[0].ToLower().Equals("tcp")) ? 1 : 0;
-            //args.RemoveAt(0);
+        /// <summary>
+        /// Initializes this network connections connection to the client at the specified IP.
+        /// </summary>
+        /// <param name="ip">The IP of the client being connected to</param>
+        /// <param name="transportType">The type of transport protocol requested, either TCP or UDP</param>
+        /// <param name="port">The port of the server to connect to</param>
+        /// <param name="name">If not null, the name of the file to be written to</param>
+        public void ConnectTo(string ip, string transportType, string name = null, int port = 9001)
+        {
+            _ip = ip;
+            _port = port;
+            _name = name;
+            _client = new TcpClient(ip, _port);
+            _logger.Info($"Connecting to server: {ip}, on port {port}");
+            var connType = (transportType.ToLower().Equals("tcp")) ? 1 : 0;
+            _cmdWriter.writeCmdPacket(_client.GetStream(), 1, (byte)connType);
 
-            // Stream or file save
-            var serviceType = args[0];
-            args.RemoveAt(0);
-            
-            string fileName = null;
-            // if it's a save service type then save the file locally
-            if(args[0].ToLower().Equals("save"))
-            {
-                fileName = args[0];
-                args.RemoveAt(0);
-            }
-            
-            _optWriter.writeOptsPacket(_client.GetStream(), args);
+            _ = Task.Run(() => new NetworkClient(_client.GetStream(), name));
 
-            // Connect stream and write command packet
-            Console.WriteLine("Requesting connection");
-            _cmdWriter.writeCmdPacket(_client.GetStream(), 1, 1);
+        }
 
-            _ = Task.Run(() => new NetworkClient(_client.GetStream(), fileName));
-
-            Console.WriteLine("Press any key to stop stream");
-            var key = Console.ReadKey();
+        /// <summary>
+        /// Close the current connection, and exit this network connection.
+        /// </summary>
+        public void CloseConnection()
+        {
+            _logger.Info($"Disconnecting from {_ip}: {this.ToString()}");
             _cmdWriter.writeCmdPacket(_client.GetStream(), 0, 0);
+            _client.Close();
+        }
+
+        /// <summary>
+        /// Get a string representation of this network connection.
+        /// </summary>
+        /// <returns>A string representation on this network connection</returns>
+        public override string ToString()
+        {
+            if (_name != null)
+            {
+                return $"Port: {_port}, outputting to file {_name}";
+            }
+            return $"Port: {_port}, outputting to stream";
         }
     }
 }

@@ -8,7 +8,7 @@ namespace client.Classes.Network
 {
     public class NetworkClient
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private NetworkStream _stream;
 
         public NetworkClient(NetworkStream stream, string file = null)
@@ -22,15 +22,15 @@ namespace client.Classes.Network
                 try
                 {
                     var bw = new BinaryWriter(new FileStream(file, FileMode.Create));
-                    Console.WriteLine("Writing stream to file.");
+                    _logger.Info("Writing stream to file");
 
                     await _stream.CopyToAsync(bw.BaseStream);
                     bw?.Close();
-                    Console.WriteLine($"Done writing to {file}");
+                    _logger.Info($"Done writing to file {file}");
                 }
                 catch(IOException ex)
                 {
-                    logger.Error(ex.Message);
+                    _logger.Error(ex.Message);
                 }
             }
             else

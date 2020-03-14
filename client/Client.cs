@@ -1,13 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Net.Sockets;
-using System.Threading;
-using client.Interfaces.PacketWriter.CmdPacketWriter;
-using client.Classes.PacketWriter.CmdPacketWriter;
-using client.Classes.Network;
 using System.Linq;
+using System.Threading.Tasks;
+using client.Classes.Network;
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using client.Classes.Constants;
 
 namespace client
 {
@@ -15,45 +12,62 @@ namespace client
     {
         static void Main(string[] args)
         {
-            int port = 9001;
+            // Use the appsettings.json to configure defaults.
+            var builder = new ConfigurationBuilder().AddJsonFile(ConfigRuntimeConstants.SETTINGS_FILE, optional: false, reloadOnChange: true);
+            IConfigurationRoot configuration = builder.Build();
+            string port = configuration.GetSection(ConfigRuntimeConstants.NETWORK)["port"];
             string ip = "127.0.0.1";
-            string name = "test-tcp.mp4";
-            var client = new NetworkConnection(args.ToList());
-        }
-        static void testBytesPacket(int port, string ip)
-        {
-            TcpClient client = new TcpClient(ip, port);
-            ICmdPacketWriter cmdPacket = new CmdPacketWriter(); 
-            try{
-                cmdPacket.writeCmdPacket(client.GetStream(), 1, 1);
-                Console.WriteLine("Buffer written");
-            }
-            catch(Exception ex)
+            string name = "test-tcp";
+            string cmd = "";
+            // This dictionary keeps track of all the connections
+            IDictionary<string, NetworkConnection> serverDictionary = new Dictionary<string, NetworkConnection>();
+            // Interactive CLI stays open until q is pressed.
+            while (cmd.ToLower() != "q")
             {
-                Console.WriteLine(ex.Message);
-            }
-            client.Close();
-        }
-        async static Task test(string name, string ip, int port)
-        {
-            TcpClient client = new TcpClient(ip, port);
-            BinaryWriter bw;
-
-            try
-            {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                bw = new BinaryWriter(new FileStream(name, FileMode.Create));
-                Console.WriteLine("Writing stream to file.");
-                await client.GetStream().CopyToAsync(bw.BaseStream);
-                stopwatch.Stop();
-                bw?.Close();
-                Console.WriteLine($"Finished process in {stopwatch.ElapsedMilliseconds}.");
-            }
-            catch (IOException ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("error IO.");
+                Console.Write("Please input a command: ");
+                cmd = Console.ReadLine();
+                string[] commandArgs = cmd.Split(" ");
+                switch (commandArgs.FirstOrDefault())
+                {
+                    case "list":
+                        var dictionary = serverDictionary.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
+                        Console.WriteLine(string.Join(Environment.NewLine, dictionary));
+                        break;
+                    case "connect":
+                        if (commandArgs.Length >= 2)
+                        {
+                            Console.WriteLine($"Connecting to client: {commandArgs[1]}");
+                            var ipArgs = commandArgs[1].Split(":");
+                            ip = ipArgs[0];
+                            if (ipArgs.Length == 2) {
+                                port = ipArgs[1];
+                            }
+                            serverDictionary[ip] = new NetworkConnection();
+                            if (commandArgs.Length >= 3)
+                            {
+                                name = commandArgs[2];
+                            }
+                            Task.Run(() => serverDictionary[ip].ConnectTo(ip, "tcp", name + ".mp4", Int32.Parse(port)));
+                        }
+                        else
+                        {
+                            Console.WriteLine("Please specify an IP.");
+                        }
+                        break;
+                    case "disconnect":
+                        ip = commandArgs[1];
+                        serverDictionary[ip].CloseConnection();
+                        serverDictionary.Remove(ip);
+                        break;
+                    case "q":
+                        foreach(KeyValuePair<string, NetworkConnection> server in serverDictionary) {
+                            server.Value.CloseConnection();
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Command not found. Use 'help' to view list of valid commands.");
+                        break;
+                }
             }
         }
     }
