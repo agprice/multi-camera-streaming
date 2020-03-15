@@ -1,4 +1,3 @@
-using System;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -9,7 +8,9 @@ using client.Interfaces.PacketWriter.OptsPacketWriter;
 
 using client.Classes.PacketWriter.OptsPacketWriter;
 using client.Classes.PacketWriter.CmdPacketWriter;
-using System.Collections.Generic;
+using client.Interfaces.Display;
+using client.Classes.Display;
+using System;
 
 namespace client.Classes.Network
 {
@@ -22,6 +23,19 @@ namespace client.Classes.Network
         private TcpClient _client;
         private string _name = null;
         private string _ip = null;
+
+        private string _id = null;
+
+        private IDisplay _display;
+        /// <summary>
+        /// Called when a display is closed.
+        /// </summary>
+        public event EventHandler<string> DisplayClosed;
+
+        /// <summary>
+        /// Called when a connection is succesfully established.
+        /// </summary>
+        public event EventHandler<string> ConnectionSuccesful;
 
         /// <summary>
         /// Set of connection
@@ -42,13 +56,30 @@ namespace client.Classes.Network
             _ip = ip;
             _port = port;
             _name = name;
-            _client = new TcpClient(ip, _port);
+            try
+            {
+                _logger.Info($"Attempting connection to {_ip}");
+                _client = new TcpClient(ip, _port);
+                // Generate a unique client id
+                _id = $"{_ip}:{port}-{_client.GetHashCode()}";
+                // If the connection was obtained, notify any listeners
+                ConnectionSuccesful.Invoke(this, _id);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"\nThere was an error connecting to {ip} on port {port}");
+                return;
+            }
             _logger.Info($"Connecting to server: {ip}, on port {port}");
             var connType = (transportType.ToLower().Equals("tcp")) ? 1 : 0;
             _cmdWriter.writeCmdPacket(_client.GetStream(), 1, (byte)connType);
-
-            _ = Task.Run(() => new NetworkClient(_client.GetStream(), name));
-
+            _logger.Info(name);
+            if (_name == null)
+            {
+                _display = new MpvDisplay(_client.GetStream(), _id);
+                _display.WindowClosedEvent = DisplayClosed;
+            }
+            _ = Task.Run(() => new NetworkClient(_client.GetStream(), name, _display));
         }
 
         /// <summary>
@@ -57,8 +88,9 @@ namespace client.Classes.Network
         public void CloseConnection()
         {
             _logger.Info($"Disconnecting from {_ip}: {this.ToString()}");
-            _cmdWriter.writeCmdPacket(_client.GetStream(), 0, 0);
-            _client.Close();
+            _cmdWriter?.writeCmdPacket(_client?.GetStream(), 0, 0);
+            _display?.closeDisplay();
+            _client?.Close();
         }
 
         /// <summary>
