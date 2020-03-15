@@ -8,8 +8,15 @@ using client.Classes.Constants;
 
 namespace client
 {
+    /// <summary>
+    /// This is the main class for the client application. It spawns all connections to servers, and manages them via a CLI.
+    /// </summary>
     class Client
     {
+        /// <summary>
+        /// This main contains a lazily written CLI which allows for interfacing with the client.
+        /// </summary>
+        /// <param name="args">CLI args, not used</param>
         static void Main(string[] args)
         {
             // Use the appsettings.json to configure defaults.
@@ -36,24 +43,36 @@ namespace client
                     case "connect":
                         if (commandArgs.Length >= 2)
                         {
-                            Console.WriteLine($"Connecting to server: {commandArgs[1]}");
+                            Console.WriteLine($"Attempting connection to server: {commandArgs[1]}");
                             var ipArgs = commandArgs[1].Split(":");
                             ip = ipArgs[0];
                             if (ipArgs.Length == 2)
                             {
                                 port = ipArgs[1];
                             }
-                            serverDictionary[ip] = new NetworkConnection();
-                            serverDictionary[ip].DisplayClosed += ((object sender, System.EventArgs e) =>
+                            NetworkConnection newServer = new NetworkConnection();
+                            // Setup callbacks on succesful connections, or connection closed
+                            newServer.ConnectionSuccesful += ((object sender, string id) =>
                             {
-                                serverDictionary[ip].CloseConnection();
-                                serverDictionary.Remove(ip);
+                                Console.WriteLine($"\nConnected to {id}");
+                                serverDictionary[id] = sender as NetworkConnection;
+                                Console.Write("Please input a command: ");
+                            });
+                            newServer.ConnectionClosed += ((object sender, string id) =>
+                            {
+                                Console.WriteLine($"Disconnecting from {id}");
+                                serverDictionary[id].CloseConnection();
+                                serverDictionary.Remove(id);
+                                var dictionary = serverDictionary.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
+                                Console.WriteLine(string.Join(Environment.NewLine, dictionary));
+                                Console.Write("Please input a command: ");
                             });
                             if (commandArgs.Length >= 3)
                             {
                                 name = commandArgs[2];
                             }
-                            Task.Run(() => serverDictionary[ip].ConnectTo(ip, "tcp", name, Int32.Parse(port)));
+                            // Start attempted connection
+                            Task.Run(() => newServer.ConnectTo(ip, "tcp", name, Int32.Parse(port)));
                         }
                         else
                         {

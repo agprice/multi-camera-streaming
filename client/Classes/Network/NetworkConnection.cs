@@ -23,7 +23,9 @@ namespace client.Classes.Network
 
         private IDisplay _display;
 
-        public event EventHandler DisplayClosed;
+        public event EventHandler<string> ConnectionClosed;
+
+        public event EventHandler<string> ConnectionSuccesful;
 
         /// <summary>
         /// Set of connection
@@ -44,13 +46,25 @@ namespace client.Classes.Network
             _ip = ip;
             _port = port;
             _name = name;
-            _client = new TcpClient(ip, _port);
+            try {
+                _logger.Info($"Attempting connection to {_ip}");
+                _client = new TcpClient(ip, _port);
+                // If the connection was obtained, notify any listeners
+                ConnectionSuccesful.Invoke(this, _ip);
+            }
+            catch (Exception ex) {
+                _logger.Error(ex, $"\nThere was an error connecting to {ip} on port {port}");
+                return;
+            }
             _logger.Info($"Connecting to server: {ip}, on port {port}");
             var connType = (transportType.ToLower().Equals("tcp")) ? 1 : 0;
             _cmdWriter.writeCmdPacket(_client.GetStream(), 1, (byte)connType);
             _logger.Info(name);
-            _display = new MpvDisplay(_client.GetStream());
-            _display.ClosedEvent = DisplayClosed;
+            if (_name == null)
+            {
+                _display = new MpvDisplay(_client.GetStream(), _ip);
+                _display.ClosedEvent = ConnectionClosed;
+            }
             _ = Task.Run(() => new NetworkClient(_client.GetStream(), name, _display));
         }
 
@@ -60,8 +74,8 @@ namespace client.Classes.Network
         public void CloseConnection()
         {
             _logger.Info($"Disconnecting from {_ip}: {this.ToString()}");
-            _cmdWriter.writeCmdPacket(_client.GetStream(), 0, 0);
-            _client.Close();
+            _cmdWriter?.writeCmdPacket(_client.GetStream(), 0, 0);
+            _client?.Close();
         }
 
         /// <summary>

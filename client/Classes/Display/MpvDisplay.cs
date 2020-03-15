@@ -2,9 +2,7 @@ using System;
 using System.Diagnostics;
 using NLog;
 using System.IO;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using client.Interfaces.Display;
 using client.Classes.Constants;
 
@@ -16,16 +14,17 @@ namespace client.Classes.Display
 
         public Process _process;
         private Stream _inputStream;
+        private string _id = null;
 
-        private EventHandler _closedCallback;
-
-        public EventHandler ClosedEvent { get => _closedCallback; set => _closedCallback = value; }
+        private EventHandler<string> _closedCallback;
+        public EventHandler<string> ClosedEvent { get => _closedCallback; set => _closedCallback = value; }
 
         /// <summary>
         /// Initialize a new ffmpeg capture device, and setup the callback for when the process exits.
         /// </summary>
-        public MpvDisplay(Stream inputStream)
+        public MpvDisplay(Stream inputStream, string id)
         {
+            _id = id;
             _inputStream = inputStream;
             _process = new Process
             {
@@ -43,14 +42,14 @@ namespace client.Classes.Display
             };
             _process.Exited += ((object sender, System.EventArgs e) =>
             {
-                _logger.Info("mpv process has exited.");
-                _closedCallback?.Invoke(this, null);
+                _logger.Info($"mpv process has exited for server {_id}");
+                _closedCallback?.Invoke(this, _id);
             });
         }
 
         public async Task startDisplay()
         {
-            _logger.Info($"Opening MPV with network stream");
+            _logger.Info($"Opening MPV with network stream for server {_id}");
             _process.Start();
             await _inputStream.CopyToAsync(_process.StandardInput.BaseStream);
             _process.Kill();
@@ -58,7 +57,7 @@ namespace client.Classes.Display
 
         public void closeDisplay()
         {
-            _logger.Info($"Closing MPV");
+            _logger.Info($"Closing MPV for server {_id}");
             _process.Kill();
         }
     }

@@ -41,8 +41,7 @@ namespace client.Classes.Network
             }
             else
             {
-                _ = _display.startDisplay();
-                // TODO: Create direct streaming using mpv
+                _ = _display?.startDisplay();
             }
         }
     }

@@ -9,6 +9,6 @@ namespace client.Interfaces.Display
     {
         Task startDisplay();
         void closeDisplay();
-        EventHandler ClosedEvent { get; set; }
+        EventHandler<string> ClosedEvent { get; set; }
     }
 }
