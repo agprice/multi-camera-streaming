@@ -51,16 +51,12 @@ namespace client.Classes.PacketWriter.OptsPacketWriter
             }
             
             // Determine whether the user has actually 
-            if(!Enum.IsDefined(typeof(Arguments), flags.First(x => x.Equals(Arguments.f.ToString())))) throw new ArgumentException("A capture device must be set");
+            if(!Enum.IsDefined(typeof(Arguments), flags.First(x => x.Equals(Arguments.format.ToString())))) throw new ArgumentException("A capture device must be set");
         }
 
         private enum Arguments
         {
-            f,
-            crf,
-            maxrate,
-            constrate,
-            hwaccel
+            format,
         }
     }
 }
