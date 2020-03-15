@@ -10,6 +10,9 @@ using System.Net;
 
 namespace server.Classes.Network
 {
+    /// <summary>
+    /// Processes and sends data to the individual network client currently connected.
+    /// </summary>
     public class NetworkClientConnection
     {
         private readonly Logger Logger = LogManager.GetCurrentClassLogger();

@@ -30,7 +30,6 @@ namespace server.Classes.Capture
         /// </summary>
         public FfmpegCapture()
         {
-            // TODO: Actually use the config now
             var builder = new ConfigurationBuilder()
             .AddJsonFile(ConfigRuntimeConstants.SETTINGS_FILE, optional: false, reloadOnChange: true);
             configuration = builder.Build();
@@ -40,7 +39,7 @@ namespace server.Classes.Capture
             {
                 StartInfo =
                     {
-                        FileName = "ffmpeg",
+                        FileName = ConfigRuntimeConstants.FFMPEG,
                         Arguments = lastOptions.getOptions(),
                         UseShellExecute = false,
                         RedirectStandardOutput = true,

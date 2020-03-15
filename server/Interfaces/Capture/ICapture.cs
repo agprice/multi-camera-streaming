@@ -1,11 +1,5 @@
 using server.Interfaces.Options;
-using System;
-using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Net.Sockets;
-using System.Net;
 using server.Classes.Network;
 namespace server.Interfaces.Capture
 {
