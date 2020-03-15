@@ -13,6 +13,22 @@ namespace client
     /// </summary>
     class Client
     {
+        static string helpDialog = 
+        @"Welcome to the Multi-Camera Streaming Basic CLI! The following commands are availabe:
+        'help': Display this dialog
+        'connect [ip][:port] [outfilename]': This command connects to a server. The port and output file are optional.
+            If no output file is specified, then the client will attemp to open the stream with an MPV client.
+            examples:
+                connect 192.168.1.123:9001 mySaveFile.mp4
+                connect 192.168.1.123
+        'disconnect [id]': This disconnects the specified server. Get the ID with the list command. Any partial 
+            ID will disconnect any IDs that match. E.G. 'disconnect 127' will disconnect any idea that matches 127*
+        'list': List all the connected clients and their IDs.
+        'q': Quit the client, closing any active connections.
+
+        If previewing using MPV windows, the session with the server will be closed when the MPV window is closed.
+        ";
+
         /// <summary>
         /// This main contains a lazily written CLI which allows for interfacing with the client.
         /// </summary>
@@ -93,6 +109,9 @@ namespace client
                                 serverDictionary.Remove(serverKVP.Key);
                             }
                         }
+                        break;
+                    case "help":
+                        Console.WriteLine(helpDialog);
                         break;
                     case "q":
                         foreach (KeyValuePair<string, NetworkConnection> server in serverDictionary)
