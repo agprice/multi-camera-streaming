@@ -20,7 +20,7 @@ namespace server.Classes.PacketReader.OptsPacketReader
 
             do
             {
-                stream.Read(buffer, 0, buffer.Length);
+                await stream.ReadAsync(buffer, 0, buffer.Length);
                 message.AppendFormat("{0}", Encoding.ASCII.GetString(buffer));
             } while (stream.DataAvailable);
 

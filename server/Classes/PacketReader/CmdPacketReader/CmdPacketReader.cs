@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using NLog;
 
@@ -12,7 +14,7 @@ namespace server.Classes.PacketReader.CmdPacketReader
     {
         private readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<byte[]> readCmdPacket(NetworkStream stream)
+        public async Task<List<byte>> readCmdPacket(NetworkStream stream)
         {
             var buffer = new byte[2];
             try
@@ -27,7 +29,7 @@ namespace server.Classes.PacketReader.CmdPacketReader
                 logger.Error(ex.Message);
             }
 
-            return buffer;
+            return buffer.ToList();
         }
     }
 }

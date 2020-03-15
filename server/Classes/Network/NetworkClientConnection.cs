@@ -1,12 +1,16 @@
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using NLog;
 
 using server.Interfaces.Capture;
 using server.Interfaces.PacketReader.CmdPacketReader;
+using server.Interfaces.PacketReader.OptsPacketReader;
 using server.Classes.PacketReader.CmdPacketReader;
-using System.Net;
+using server.Classes.PacketReader.OptsPacketReader;
+using server.Interfaces.Options;
 
 namespace server.Classes.Network
 {
@@ -19,6 +23,7 @@ namespace server.Classes.Network
         private TcpClient Client;
         private ICapture CaptureProcess;
         private readonly ICmdPacketReader cmdReader = new CmdPacketReader();
+        private readonly IOptsPacketReader optReader = new FfmpegOptsPacketReader();
 
         public NetworkClientConnection(TcpClient client, ICapture captureProcess)
         {
@@ -39,20 +44,25 @@ namespace server.Classes.Network
 
         private async Task beginNetworkConnection()
         {
-            var buffer = new byte[2];
-            Client.GetStream().Read(buffer, 0, 1);
-            Logger.Info("reading command packet");
-            if(buffer[0] == 1) buffer = await cmdReader.readCmdPacket(Client.GetStream());
-            if(buffer[1] == 1) await sendStream();
-            await Client.GetStream().ReadAsync(buffer, 0, 1);
-            buffer = await cmdReader.readCmdPacket(Client.GetStream());
-            if(buffer[1] == 0) await stopStreams();
+            IOptions opts = null;
+
+            var cmdBuffer = new List<byte>();
+            var packetType = Client.GetStream().ReadByte();
+
+            //opts = await optReader.receiveOptions(Client.GetStream());
+            cmdBuffer = await cmdReader.readCmdPacket(Client.GetStream());
+            if(cmdBuffer[1] == 1)
+            {
+                await sendStream(opts);
+            }
+            cmdBuffer = await cmdReader.readCmdPacket(Client.GetStream());
+            await stopStreams();
         }
 
-        private async Task sendStream()
+        private async Task sendStream(IOptions opts)
         {
             Logger.Info($"Requesting stream for client: {Client.Client.RemoteEndPoint}");
-            CaptureProcess.requestStream(null, this);
+            CaptureProcess.requestStream(opts, this);
         }
 
         private void requestStreamStop() {

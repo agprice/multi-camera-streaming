@@ -33,7 +33,6 @@ namespace server.Classes.Options
             var specificDefaults = options.Find(config => config.Key.Equals(ConfigRuntimeConstants.SPECIFIC_DEFAULTS)).GetChildren().ToList()
                                           .Find(config => config.Key == ConfigRuntimeConstants.OS).GetChildren();
             // Add all the paralogue global defaults to the ordered dictionary
-            Logger.Info(paralogueGlobal.Key);
             _currentOptions.Add(paralogueGlobal.Key, paralogueGlobal.Value);
             // Add all the specific defaults
             foreach(var sd in specificDefaults)
