@@ -13,8 +13,11 @@ namespace client.Classes.Network
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private NetworkStream _stream;
 
-        public NetworkClient(NetworkStream stream, string file = null)
+        private IDisplay _display;
+
+        public NetworkClient(NetworkStream stream, string file = null, IDisplay display = null)
         {
+            _display = display;
             _stream = stream;
             _ = readStream(file);
         }
@@ -38,8 +41,7 @@ namespace client.Classes.Network
             }
             else
             {
-                IDisplay display = new MpvDisplay(_stream);
-                _ = display.startDisplay();
+                _ = _display.startDisplay();
                 // TODO: Create direct streaming using mpv
             }
         }

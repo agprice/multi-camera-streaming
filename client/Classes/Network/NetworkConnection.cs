@@ -5,6 +5,10 @@ using NLog;
 
 using client.Interfaces.PacketWriter.CmdPacketWriter;
 using client.Classes.PacketWriter.CmdPacketWriter;
+using client.Interfaces.Display;
+using client.Classes.Constants;
+using client.Classes.Display;
+using System;
 
 namespace client.Classes.Network
 {
@@ -16,6 +20,10 @@ namespace client.Classes.Network
         private TcpClient _client;
         private string _name = null;
         private string _ip = null;
+
+        private IDisplay _display;
+
+        public event EventHandler DisplayClosed;
 
         /// <summary>
         /// Set of connection
@@ -41,8 +49,9 @@ namespace client.Classes.Network
             var connType = (transportType.ToLower().Equals("tcp")) ? 1 : 0;
             _cmdWriter.writeCmdPacket(_client.GetStream(), 1, (byte)connType);
             _logger.Info(name);
-            _ = Task.Run(() => new NetworkClient(_client.GetStream(), name));
-
+            _display = new MpvDisplay(_client.GetStream());
+            _display.ClosedEvent = DisplayClosed;
+            _ = Task.Run(() => new NetworkClient(_client.GetStream(), name, _display));
         }
 
         /// <summary>

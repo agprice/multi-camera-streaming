@@ -36,13 +36,19 @@ namespace client
                     case "connect":
                         if (commandArgs.Length >= 2)
                         {
-                            Console.WriteLine($"Connecting to client: {commandArgs[1]}");
+                            Console.WriteLine($"Connecting to server: {commandArgs[1]}");
                             var ipArgs = commandArgs[1].Split(":");
                             ip = ipArgs[0];
-                            if (ipArgs.Length == 2) {
+                            if (ipArgs.Length == 2)
+                            {
                                 port = ipArgs[1];
                             }
                             serverDictionary[ip] = new NetworkConnection();
+                            serverDictionary[ip].DisplayClosed += ((object sender, System.EventArgs e) =>
+                            {
+                                serverDictionary[ip].CloseConnection();
+                                serverDictionary.Remove(ip);
+                            });
                             if (commandArgs.Length >= 3)
                             {
                                 name = commandArgs[2];
@@ -60,7 +66,8 @@ namespace client
                         serverDictionary.Remove(ip);
                         break;
                     case "q":
-                        foreach(KeyValuePair<string, NetworkConnection> server in serverDictionary) {
+                        foreach (KeyValuePair<string, NetworkConnection> server in serverDictionary)
+                        {
                             server.Value.CloseConnection();
                         }
                         break;

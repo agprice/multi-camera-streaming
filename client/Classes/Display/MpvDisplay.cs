@@ -14,8 +14,12 @@ namespace client.Classes.Display
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private Process _process;
+        public Process _process;
         private Stream _inputStream;
+
+        private EventHandler _closedCallback;
+
+        public EventHandler ClosedEvent { get => _closedCallback; set => _closedCallback = value; }
 
         /// <summary>
         /// Initialize a new ffmpeg capture device, and setup the callback for when the process exits.
@@ -37,10 +41,10 @@ namespace client.Classes.Display
                     },
                 EnableRaisingEvents = true
             };
-
             _process.Exited += ((object sender, System.EventArgs e) =>
             {
-                _logger.Info("ffmpeg process has exited.");
+                _logger.Info("mpv process has exited.");
+                _closedCallback?.Invoke(this, null);
             });
         }
 
@@ -49,6 +53,7 @@ namespace client.Classes.Display
             _logger.Info($"Opening MPV with network stream");
             _process.Start();
             await _inputStream.CopyToAsync(_process.StandardInput.BaseStream);
+            _process.Kill();
         }
 
         public void closeDisplay()
