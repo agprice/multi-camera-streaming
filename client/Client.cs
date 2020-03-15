@@ -63,9 +63,6 @@ namespace client
                                 Console.WriteLine($"\nDisconnecting from {id}");
                                 serverDictionary[id].CloseConnection();
                                 serverDictionary.Remove(id);
-                                var dictionary = serverDictionary.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
-                                Console.WriteLine(string.Join(Environment.NewLine, dictionary));
-                                Console.Write("Please input a command: ");
                             });
                             if (commandArgs.Length >= 3)
                             {
@@ -86,12 +83,14 @@ namespace client
                             continue;
                         }
                         ip = commandArgs[1];
-                        string serverToDisconnect = serverDictionary.Where(kvp => kvp.Key.Contains(ip)).FirstOrDefault().Key;
-                        if (serverToDisconnect != null)
+                        var serversToDisconnect = serverDictionary.Where(kvp => kvp.Key.Contains(ip));
+                        if (serversToDisconnect != null)
                         {
-                            Console.WriteLine($"\nDisconnecting from {serverToDisconnect}");
-                            serverDictionary[serverToDisconnect].CloseConnection();
-                            serverDictionary.Remove(serverToDisconnect);
+                            foreach (var serverKVP in serversToDisconnect) {
+                                Console.WriteLine($"\nDisconnecting from {serverKVP.Key}");
+                                serverDictionary[serverKVP.Key].CloseConnection();
+                                serverDictionary.Remove(serverKVP.Key);
+                            }
                         }
                         break;
                     case "q":
