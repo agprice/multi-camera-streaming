@@ -60,7 +60,7 @@ namespace client
                             });
                             newServer.ConnectionClosed += ((object sender, string id) =>
                             {
-                                Console.WriteLine($"Disconnecting from {id}");
+                                Console.WriteLine($"\nDisconnecting from {id}");
                                 serverDictionary[id].CloseConnection();
                                 serverDictionary.Remove(id);
                                 var dictionary = serverDictionary.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
@@ -80,9 +80,19 @@ namespace client
                         }
                         break;
                     case "disconnect":
+                        if (commandArgs.Length < 2)
+                        {
+                            Console.WriteLine("Please specify an ID. View connections with the 'list' command.");
+                            continue;
+                        }
                         ip = commandArgs[1];
-                        serverDictionary[ip].CloseConnection();
-                        serverDictionary.Remove(ip);
+                        string serverToDisconnect = serverDictionary.Where(kvp => kvp.Key.Contains(ip)).FirstOrDefault().Key;
+                        if (serverToDisconnect != null)
+                        {
+                            Console.WriteLine($"\nDisconnecting from {serverToDisconnect}");
+                            serverDictionary[serverToDisconnect].CloseConnection();
+                            serverDictionary.Remove(serverToDisconnect);
+                        }
                         break;
                     case "q":
                         foreach (KeyValuePair<string, NetworkConnection> server in serverDictionary)

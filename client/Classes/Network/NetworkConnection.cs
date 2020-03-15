@@ -6,7 +6,6 @@ using NLog;
 using client.Interfaces.PacketWriter.CmdPacketWriter;
 using client.Classes.PacketWriter.CmdPacketWriter;
 using client.Interfaces.Display;
-using client.Classes.Constants;
 using client.Classes.Display;
 using System;
 
@@ -21,6 +20,7 @@ namespace client.Classes.Network
         private string _name = null;
         private string _ip = null;
 
+        private string _id = null;
         private IDisplay _display;
 
         public event EventHandler<string> ConnectionClosed;
@@ -46,13 +46,17 @@ namespace client.Classes.Network
             _ip = ip;
             _port = port;
             _name = name;
-            try {
+            try
+            {
                 _logger.Info($"Attempting connection to {_ip}");
                 _client = new TcpClient(ip, _port);
+                // Generate a unique client id
+                _id = $"{_ip}:{port}-{_client.GetHashCode()}";
                 // If the connection was obtained, notify any listeners
-                ConnectionSuccesful.Invoke(this, _ip);
+                ConnectionSuccesful.Invoke(this, _id);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 _logger.Error(ex, $"\nThere was an error connecting to {ip} on port {port}");
                 return;
             }
@@ -62,8 +66,8 @@ namespace client.Classes.Network
             _logger.Info(name);
             if (_name == null)
             {
-                _display = new MpvDisplay(_client.GetStream(), _ip);
-                _display.ClosedEvent = ConnectionClosed;
+                _display = new MpvDisplay(_client.GetStream(), _id);
+                _display.WindowClosedEvent = ConnectionClosed;
             }
             _ = Task.Run(() => new NetworkClient(_client.GetStream(), name, _display));
         }
@@ -74,7 +78,8 @@ namespace client.Classes.Network
         public void CloseConnection()
         {
             _logger.Info($"Disconnecting from {_ip}: {this.ToString()}");
-            _cmdWriter?.writeCmdPacket(_client.GetStream(), 0, 0);
+            _cmdWriter?.writeCmdPacket(_client?.GetStream(), 0, 0);
+            _display?.closeDisplay();
             _client?.Close();
         }
 
