@@ -21,10 +21,16 @@ namespace client.Classes.Network
         private string _ip = null;
 
         private string _id = null;
+
         private IDisplay _display;
+        /// <summary>
+        /// Called when a display is closed.
+        /// </summary>
+        public event EventHandler<string> DisplayClosed;
 
-        public event EventHandler<string> ConnectionClosed;
-
+        /// <summary>
+        /// Called when a connection is succesfully established.
+        /// </summary>
         public event EventHandler<string> ConnectionSuccesful;
 
         /// <summary>
@@ -67,7 +73,7 @@ namespace client.Classes.Network
             if (_name == null)
             {
                 _display = new MpvDisplay(_client.GetStream(), _id);
-                _display.WindowClosedEvent = ConnectionClosed;
+                _display.WindowClosedEvent = DisplayClosed;
             }
             _ = Task.Run(() => new NetworkClient(_client.GetStream(), name, _display));
         }

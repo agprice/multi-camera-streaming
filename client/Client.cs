@@ -58,7 +58,7 @@ namespace client
                                 serverDictionary[id] = sender as NetworkConnection;
                                 Console.Write("Please input a command: ");
                             });
-                            newServer.ConnectionClosed += ((object sender, string id) =>
+                            newServer.DisplayClosed += ((object sender, string id) =>
                             {
                                 Console.WriteLine($"\nDisconnecting from {id}");
                                 serverDictionary[id].CloseConnection();
@@ -86,7 +86,8 @@ namespace client
                         var serversToDisconnect = serverDictionary.Where(kvp => kvp.Key.Contains(ip));
                         if (serversToDisconnect != null)
                         {
-                            foreach (var serverKVP in serversToDisconnect) {
+                            foreach (var serverKVP in serversToDisconnect)
+                            {
                                 Console.WriteLine($"\nDisconnecting from {serverKVP.Key}");
                                 serverDictionary[serverKVP.Key].CloseConnection();
                                 serverDictionary.Remove(serverKVP.Key);

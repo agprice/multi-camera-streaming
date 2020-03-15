@@ -8,6 +8,10 @@ using client.Classes.Constants;
 
 namespace client.Classes.Display
 {
+    /// <summary>
+    /// This is the MPV display class, which starts an MPV 
+    /// process that can be used to display the datastream.
+    /// </summary>
     public class MpvDisplay : IDisplay
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -47,7 +51,10 @@ namespace client.Classes.Display
             _logger.Info($"mpv process has exited for server {_id}");
             _windowClosedEvent?.Invoke(this, _id);
         }
-
+        /// <summary>
+        /// Starts the MPV process, and copies the stream data over to be displayed.
+        /// </summary>
+        /// <returns></returns>
         public async Task startDisplay()
         {
             _logger.Info($"Opening MPV with network stream for server {_id}");
@@ -57,6 +64,9 @@ namespace client.Classes.Display
             _process.Kill();
         }
 
+        /// <summary>
+        /// Closes the MPV process, shutting down the streaming display.
+        /// </summary>
         public void closeDisplay()
         {
             _logger.Info($"Closing MPV for server {_id}");
