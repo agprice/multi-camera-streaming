@@ -26,32 +26,22 @@ namespace server.Classes.Options
             // Get all global defaults as list of enumerables
             var globalDefaults = options.Find(config => config.Key.Equals(ConfigRuntimeConstants.GLOBAL_DEFAULTS)).GetChildren().ToList();
             // Get paralogue global defaults (these are what go before the specific defaults)
-            var paralogueGlobal = globalDefaults.Find(config => config.Key.Equals(ConfigRuntimeConstants.PARALOGUE)).GetChildren();
+            var paralogueGlobal = globalDefaults.Find(config => config.Key.Equals(ConfigRuntimeConstants.PARALOGUE));
             // Get epilogue global defaults (these are what go after the specific defaults)
-            var epilogueGlobal = globalDefaults.Find(config => config.Key.Equals(ConfigRuntimeConstants.EPILOGUE)).GetChildren();
-            foreach(var ep in epilogueGlobal)
-                Logger.Info(ep.Key);
+            var epilogueGlobal = globalDefaults.Find(config => config.Key.Equals(ConfigRuntimeConstants.EPILOGUE));
             // Get all specific OS defaults as a list of enumerables based on the current OS
             var specificDefaults = options.Find(config => config.Key.Equals(ConfigRuntimeConstants.SPECIFIC_DEFAULTS)).GetChildren().ToList()
                                           .Find(config => config.Key == ConfigRuntimeConstants.OS).GetChildren();
             // Add all the paralogue global defaults to the ordered dictionary
-            foreach(var pgd in paralogueGlobal)
-            {
-                _currentOptions.Add(pgd.Key, pgd.Value);
-            }
+            Logger.Info(paralogueGlobal.Key);
+            _currentOptions.Add(paralogueGlobal.Key, paralogueGlobal.Value);
             // Add all the specific defaults
             foreach(var sd in specificDefaults)
             {
                 _currentOptions.Add(sd.Key, sd.Value);
             }
             // Add all the epilogue global defaults to the ordered dictionary
-            foreach(var egd in epilogueGlobal)
-            {
-                _currentOptions.Add(egd.Key, egd.Value);
-            }
-            var arr = new string[_currentOptions.Values.Count];
-            _currentOptions.Values.CopyTo(arr, 0);
-            Logger.Info(string.Join(" ", arr));
+            _currentOptions.Add(epilogueGlobal.Key, epilogueGlobal.Value);
         }
         
         /// <summary>
@@ -71,9 +61,9 @@ namespace server.Classes.Options
 
         public string getOptions()
         {
-            var s = string.Join(" ", _currentOptions.Values);
-            Logger.Info(s);
-            return s;
+            var arr = new string[_currentOptions.Values.Count];
+            _currentOptions.Values.CopyTo(arr, 0);
+            return string.Join(" ", arr);
         }
 
         public void remove(string option)
