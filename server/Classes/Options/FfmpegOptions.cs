@@ -37,7 +37,7 @@ namespace server.Classes.Options
             // Add all the specific defaults
             foreach(var sd in specificDefaults)
             {
-                _currentOptions.Add(sd.Key, sd.Value);
+                _currentOptions.Add(sd.Key, "-" + sd.Key + " " + sd.Value);
             }
             // Add all the epilogue global defaults to the ordered dictionary
             _currentOptions.Add(epilogueGlobal.Key, epilogueGlobal.Value);
@@ -49,19 +49,26 @@ namespace server.Classes.Options
         /// <param name="options">Set of options split by space</param>
         public void add(string options)
         {
-            if(options == null || options.Length == 0) return;
-            var parsedOptions = options.Split(' ');
+            Logger.Info("Adding options");
+            if(options == null || options.Length == 0)
+            {
+                Logger.Info("No options change found");
+                return;
+            }
 
+            var parsedOptions = options.Split(' ');
             for(var i = 0; i < parsedOptions.Length; i+=2)
             {
-                _currentOptions[parsedOptions[i]] = parsedOptions[i+1];
+                _currentOptions[parsedOptions[i].Replace("-", "")] = parsedOptions[i] + " " + parsedOptions[i+1];
             }
+            Logger.Info("Done adding options " + options);
         }
 
         public string getOptions()
         {
             var arr = new string[_currentOptions.Values.Count];
             _currentOptions.Values.CopyTo(arr, 0);
+            Logger.Info(string.Join(" ", arr));
             return string.Join(" ", arr);
         }
 

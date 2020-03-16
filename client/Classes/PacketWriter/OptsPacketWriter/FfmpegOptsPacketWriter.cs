@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using NLog;
 
 using client.Interfaces.PacketWriter.OptsPacketWriter;
+using client.Classes.Constants;
 
 namespace client.Classes.PacketWriter.OptsPacketWriter
 {
@@ -23,10 +24,11 @@ namespace client.Classes.PacketWriter.OptsPacketWriter
 
             // Convert list to string then to byte array to send to the network
             var argsAsBytes = Encoding.ASCII.GetBytes(string.Join(" ", args));
-            var optPacket = new byte[argsAsBytes.Length + 1];
+            var optPacket = new byte[argsAsBytes.Length + 2];
             optPacket[0] = 0;
+            optPacket[1] = (byte)argsAsBytes.Length;
             //Append argument string as byte array
-            Array.Copy(argsAsBytes, 0, optPacket, 1, argsAsBytes.Length);
+            Array.Copy(argsAsBytes, 0, optPacket, 2, argsAsBytes.Length);
 
             try
             {
@@ -49,14 +51,7 @@ namespace client.Classes.PacketWriter.OptsPacketWriter
             {
                 if(!Enum.IsDefined(typeof(Arguments), flag)) throw new ArgumentException("Argument " + flag + " is not supported");
             }
-            
-            // Determine whether the user has actually 
-            if(!Enum.IsDefined(typeof(Arguments), flags.First(x => x.Equals(Arguments.format.ToString())))) throw new ArgumentException("A capture device must be set");
         }
 
-        private enum Arguments
-        {
-            format,
-        }
     }
 }

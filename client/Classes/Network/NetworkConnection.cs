@@ -1,5 +1,6 @@
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using NLog;
 
@@ -51,7 +52,7 @@ namespace client.Classes.Network
         /// <param name="transportType">The type of transport protocol requested, either TCP or UDP</param>
         /// <param name="port">The port of the server to connect to</param>
         /// <param name="name">If not null, the name of the file to be written to</param>
-        public void ConnectTo(string ip, string transportType, string name = null, int port = 9001)
+        public void ConnectTo(string ip, string transportType, List<string> argsList, string name = null, int port = 9001)
         {
             _ip = ip;
             _port = port;
@@ -72,6 +73,7 @@ namespace client.Classes.Network
             }
             _logger.Info($"Connecting to server: {ip}, on port {port}");
             var connType = (transportType.ToLower().Equals("tcp")) ? 1 : 0;
+            _optWriter.writeOptsPacket(_client.GetStream(), argsList);
             _cmdWriter.writeCmdPacket(_client.GetStream(), 1, (byte)connType);
             _logger.Info(name);
             if (_name == null)

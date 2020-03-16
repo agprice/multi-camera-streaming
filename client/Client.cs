@@ -21,6 +21,10 @@ namespace client
             examples:
                 connect 192.168.1.123:9001 mySaveFile.mp4
                 connect 192.168.1.123
+        'options': This command adds options to the camera/ display stream. Currently support for the display
+            type exists.
+            example:
+                options format x11grab
         'disconnect [id]': This disconnects the specified server. Get the ID with the list command. Any partial 
             ID will disconnect any IDs that match. E.G. 'disconnect 127' will disconnect any idea that matches 127*
         'list': List all the connected clients and their IDs.
@@ -42,6 +46,7 @@ namespace client
             string ip = "127.0.0.1";
             string name = null;
             string cmd = "";
+            List<string> opts = new List<string>();
             // This dictionary keeps track of all the connections
             IDictionary<string, NetworkConnection> serverDictionary = new Dictionary<string, NetworkConnection>();
             // Interactive CLI stays open until q is pressed.
@@ -56,6 +61,12 @@ namespace client
                         var dictionary = serverDictionary.Select(kvp => kvp.Key + ": " + kvp.Value.ToString());
                         Console.WriteLine(string.Join(Environment.NewLine, dictionary));
                         break;
+                    case "options":
+                    {
+                        opts = commandArgs.ToList();
+                        opts.Remove("options");
+                    }
+                    break;
                     case "connect":
                         if (commandArgs.Length >= 2)
                         {
@@ -85,7 +96,7 @@ namespace client
                                 name = commandArgs[2];
                             }
                             // Start attempted connection
-                            Task.Run(() => newServer.ConnectTo(ip, "tcp", name, Int32.Parse(port)));
+                            Task.Run(() => newServer.ConnectTo(ip, "tcp", opts, name, Int32.Parse(port)));
                         }
                         else
                         {
@@ -110,7 +121,7 @@ namespace client
                             }
                         }
                         break;
-                    case "help":
+                    case "help": 
                         Console.WriteLine(helpDialog);
                         break;
                     case "q":

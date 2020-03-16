@@ -48,15 +48,17 @@ namespace server.Classes.Network
 
             var cmdBuffer = new List<byte>();
             var packetType = Client.GetStream().ReadByte();
-
-            //opts = await optReader.receiveOptions(Client.GetStream());
-            cmdBuffer = await cmdReader.readCmdPacket(Client.GetStream());
+            Logger.Info("Reading options packet");
+            if(packetType == 0) opts = await optReader.receiveOptions(Client.GetStream());
+            packetType = Client.GetStream().ReadByte();
+            if(packetType == 1) cmdBuffer = await cmdReader.readCmdPacket(Client.GetStream());
             if(cmdBuffer[1] == 1)
             {
+                Logger.Info("Sending stream");
                 await sendStream(opts);
             }
             cmdBuffer = await cmdReader.readCmdPacket(Client.GetStream());
-            await stopStreams();
+            if(cmdBuffer[1] == 0) await stopStreams();
         }
 
         private async Task sendStream(IOptions opts)
