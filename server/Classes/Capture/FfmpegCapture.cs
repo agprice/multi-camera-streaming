@@ -33,7 +33,7 @@ namespace server.Classes.Capture
             var builder = new ConfigurationBuilder()
             .AddJsonFile(ConfigRuntimeConstants.SETTINGS_FILE, optional: false, reloadOnChange: true);
             configuration = builder.Build();
-            lastOptions = new FfmpegOptions(configuration.GetSection(ConfigRuntimeConstants.FFMPEG)[ConfigRuntimeConstants.OS]);
+            lastOptions = new FfmpegOptions();
             bufferSize = Int32.Parse(configuration.GetSection(ConfigRuntimeConstants.NETWORK)["port"]);
             process = new Process
             {

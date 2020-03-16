@@ -1,5 +1,6 @@
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace server.Interfaces.PacketReader.CmdPacketReader
 {
@@ -10,6 +11,6 @@ namespace server.Interfaces.PacketReader.CmdPacketReader
         /// </summary>
         /// <param name="stream">Network stream from the client</param>
         /// <returns>Returns the commands as an array of bytes</returns>
-        Task<byte[]> readCmdPacket(NetworkStream stream);
+        Task<List<byte>> readCmdPacket(NetworkStream stream);
     }
 }

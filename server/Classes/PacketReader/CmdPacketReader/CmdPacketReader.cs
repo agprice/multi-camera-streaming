@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using NLog;
 
@@ -10,25 +12,24 @@ namespace server.Classes.PacketReader.CmdPacketReader
 {
     public class CmdPacketReader : ICmdPacketReader
     {
-        private readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<byte[]> readCmdPacket(NetworkStream stream)
+        public async Task<List<byte>> readCmdPacket(NetworkStream stream)
         {
             var buffer = new byte[2];
             try
             {
                 await stream.ReadAsync(buffer, 0, 1);
-                Console.WriteLine(buffer[0]);
                 buffer[1] = (byte) (buffer[0] >> 1);
                 buffer[0] = (byte) ((buffer[0] ^ buffer[1]) >> 1);
-                logger.Info($"Cmd packet read {buffer[0]}, {buffer[1]}");
+                Logger.Info($"Cmd packet read {buffer[0]}, {buffer[1]}");
             }
             catch(Exception ex)
             {
-                logger.Error(ex.Message);
+                Logger.Error(ex.Message);
             }
 
-            return buffer;
+            return buffer.ToList();
         }
     }
 }

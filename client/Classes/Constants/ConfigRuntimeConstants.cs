@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 namespace client.Classes.Constants
 {
-    public class ConfigRuntimeConstants
+    public static class ConfigRuntimeConstants
     {
         public static readonly string MPV = "mpv";
         public static readonly string NETWORK = "network";
@@ -24,5 +24,10 @@ namespace client.Classes.Constants
                 }
             }
         }
+    }
+    public enum Arguments
+    {
+        f,
+        i
     }
 }
