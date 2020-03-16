@@ -13,7 +13,7 @@ namespace client
     /// </summary>
     class Client
     {
-        static string helpDialog = 
+        static string helpDialog =
         @"Welcome to the Multi-Camera Streaming Basic CLI! The following commands are availabe:
         'help': Display this dialog
         'connect [ip][:port] [outfilename]': This command connects to a server. The port and output file are optional.
@@ -94,6 +94,10 @@ namespace client
                             if (commandArgs.Length >= 3)
                             {
                                 name = commandArgs[2];
+                            }
+                            else
+                            {
+                                name = null;
                             }
                             // Start attempted connection
                             Task.Run(() => newServer.ConnectTo(ip, "tcp", opts, name, Int32.Parse(port)));
