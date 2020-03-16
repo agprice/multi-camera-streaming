@@ -21,10 +21,11 @@ namespace client
             examples:
                 connect 192.168.1.123:9001 mySaveFile.mp4
                 connect 192.168.1.123
-        'options': This command adds options to the camera/ display stream. Currently support for the display
-            type exists.
-            example:
-                options format x11grab
+        'options': This command adds options to the camera/ display stream. Options should be done before calling
+            the connect command. Current options supported are the video stream device and the input
+            Current Options: 
+                options -f x11grab -i :0,0+0.0
+                options -f v4l2 -i /dev/video0
         'disconnect [id]': This disconnects the specified server. Get the ID with the list command. Any partial 
             ID will disconnect any IDs that match. E.G. 'disconnect 127' will disconnect any idea that matches 127*
         'list': List all the connected clients and their IDs.
