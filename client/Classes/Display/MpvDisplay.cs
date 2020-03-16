@@ -35,7 +35,7 @@ namespace client.Classes.Display
                 StartInfo =
                     {
                         FileName = ConfigRuntimeConstants.MPV,
-                        Arguments = "--no-config --no-terminal --profile low-latency -",
+                        Arguments = "--no-config --no-terminal --profile=low-latency -",
                         UseShellExecute = false,
                         RedirectStandardOutput = false,
                         RedirectStandardInput = true,
