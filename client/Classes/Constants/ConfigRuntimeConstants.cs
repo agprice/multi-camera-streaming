@@ -28,5 +28,6 @@ namespace client.Classes.Constants
     public enum Arguments
     {
         f,
+        i
     }
 }
